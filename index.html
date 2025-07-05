@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ไพที กรุป CCTV Center: เปรียบเทียบโซลูชัน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .flow-node {
+            border: 2px solid #BFD7EA;
+            background-color: #ffffff;
+            color: #0B3954;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #087E8B;
+            font-weight: bold;
+        }
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Palette: Brilliant Blues (#0B3954, #087E8B, #BFD7EA, #FF5A5F) -->
+    <!-- No Mermaid JS or SVG graphics were used in this file. -->
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0B3954] mb-4">ไพที กรุป CCTV Center</h1>
+            <p class="text-base sm:text-lg md:text-xl text-slate-600">คู่มือเปรียบเทียบโซลูชันแบบเห็นภาพ เพื่อช่วยเราตัดสินใจระหว่าง On-Premise, Hybrid และ Full-Cloud</p>
+        </header>
+
+        <main>
+            <!-- Section 1: High-Level Comparison Radar Chart -->
+            <section class="mb-16">
+                <div class="kpi-card">
+                    <h2 class="text-2xl font-bold text-[#0B3954] mb-2 text-center">เปรียบเทียบโซลูชันภาพรวม</h2>
+                    <p class="text-center text-slate-600 mb-6">เรดาร์ชาร์ตนี้แสดงภาพรวมอย่างรวดเร็วว่าทั้งสามโซลูชันเป็นอย่างไรเมื่อเทียบกับปัจจัยสำคัญในการตัดสินใจ ยิ่งรูปทรงมีขนาดใหญ่เท่าใด คะแนนในหมวดหมู่นั้นก็จะยิ่งสูงขึ้น</p>
+                    <div class="chart-container h-[400px] md:h-[500px] max-w-3xl">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Detailed Solution Breakdown -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-[#0B3954] mb-8 text-center">การวิเคราะห์โซลูชันโดยละเอียด</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    <!-- Card 1: On-Premise -->
+                    <div class="kpi-card flex flex-col">
+                        <h3 class="text-2xl font-bold text-[#0B3954] mb-4">1. โซลูชัน On-Premise</h3>
+                        <p class="text-slate-600 mb-6 flex-grow">แนวทางดั้งเดิมนี้ให้เราเป็นเจ้าของและควบคุมได้อย่างสมบูรณ์ โดยการโฮสต์ฮาร์ดแวร์และซอฟต์แวร์ทั้งหมดไว้ในศูนย์ข้อมูลของเราเอง</p>
+                        
+                        <h4 class="text-lg font-semibold text-[#087E8B] mb-2">ขั้นตอนการส่งข้อมูล:</h4>
+                        <div class="flex flex-col items-center space-y-2 mb-6">
+                            <div class="flow-node w-full">🏢 กล้องสำนักงานสาขา</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node w-full">🔒 VPN ที่ปลอดภัย</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node w-full">🖥️ เซิร์ฟเวอร์ของเรา</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node w-full">🗄️ ที่เก็บข้อมูลของเรา (NAS/SAN)</div>
+                        </div>
+
+                        <div class="chart-container h-72 md:h-80">
+                            <canvas id="onPremiseChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Hybrid-Cloud -->
+                    <div class="kpi-card flex flex-col">
+                        <h3 class="text-2xl font-bold text-[#0B3954] mb-4">2. โซลูชัน Hybrid-Cloud</h3>
+                        <p class="text-slate-600 mb-6 flex-grow">แนวทางที่สมดุลโดยใช้ซอฟต์แวร์จัดการวิดีโอ (VMS) ระดับมืออาชีพในองค์กร พร้อมใช้ประโยชน์จากคลาวด์สำหรับการจัดเก็บข้อมูลระยะยาวและ API</p>
+                        
+                        <h4 class="text-lg font-semibold text-[#087E8B] mb-2">ขั้นตอนการส่งข้อมูล:</h4>
+                         <div class="flex flex-col items-center space-y-2 mb-6">
+                            <div class="flow-node w-full">🏢 กล้องสำนักงานสาขา</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node w-full">⚙️ เซิร์ฟเวอร์ VMS ในองค์กร</div>
+                             <div class="flex justify-around w-full mt-2">
+                                <div class="flex flex-col items-center">
+                                    <div class="flow-arrow">↙</div>
+                                    <div class="flow-node">🗄️ ที่เก็บข้อมูลหลัก</div>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="flow-arrow">↘</div>
+                                    <div class="flow-node">☁️ ที่เก็บข้อมูลบนคลาวด์</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-container h-72 md:h-80 mt-auto">
+                            <canvas id="hybridChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Full-Cloud (VSaaS) -->
+                    <div class="kpi-card flex flex-col">
+                        <h3 class="text-2xl font-bold text-[#0B3954] mb-4">3. โซลูชัน Full-Cloud (VSaaS)</h3>
+                        <p class="text-slate-600 mb-6 flex-grow">โมเดลนี้เป็นการมอบหมายโครงสร้างพื้นฐานทั้งหมดให้กับผู้ให้บริการ เราจ่ายค่าสมัครสมาชิกสำหรับบริการที่มีการจัดการเต็มรูปแบบและเข้าถึงได้จากทุกที่</p>
+
+                        <h4 class="text-lg font-semibold text-[#087E8B] mb-2">ขั้นตอนการส่งข้อมูล:</h4>
+                        <div class="flex flex-col items-center space-y-2 mb-6">
+                            <div class="flow-node w-full">🏢 กล้องของเรา</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node w-full">🌐 อินเทอร์เน็ต</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-node w-full">☁️ คลาวด์ของผู้ให้บริการ VSaaS</div>
+                            <div class="flow-arrow">↓</div>
+                             <div class="flow-node w-full">💻 แอปควบคุมของเรา (ผ่าน API)</div>
+                        </div>
+                        
+                        <div class="chart-container h-72 md:h-80 mt-auto">
+                            <canvas id="cloudChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 3: Cost Analysis -->
+            <section>
+                 <div class="kpi-card">
+                    <h2 class="text-2xl font-bold text-[#0B3954] mb-2 text-center">ต้นทุนรวมในการเป็นเจ้าของ (TCO) ใน 5 ปี</h2>
+                    <p class="text-center text-slate-600 mb-6">ชาร์ตนี้แสดงโครงสร้างต้นทุนโดยประมาณสำหรับแต่ละโซลูชันในช่วงห้าปี โดยเน้นความแตกต่างระหว่างการลงทุนเริ่มต้น (CapEx) และค่าธรรมเนียมที่เกิดขึ้นประจำ (OpEx)</p>
+                    <div class="chart-container max-w-4xl h-[350px] md:h-[450px]">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-16 pt-8 border-t border-slate-300">
+            <h2 class="text-2xl font-bold text-[#0B3954] mb-4">จะเลือกอย่างไร?</h2>
+            <p class="text-slate-600 max-w-3xl mx-auto mb-6">ทางเลือกที่เหมาะสมขึ้นอยู่กับลำดับความสำคัญขององค์กรของเรา พิจารณาคำถามสำคัญเหล่านี้ก่อนตัดสินใจขั้นสุดท้าย</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-[#087E8B] mb-2">💰 งบประมาณ</h3>
+                    <p>เราต้องการค่าใช้จ่ายในการลงทุนก้อนใหญ่ครั้งเดียว (On-Premise) หรือค่าใช้จ่ายในการดำเนินงานที่คาดการณ์ได้และเกิดขึ้นประจำ (Full-Cloud)?</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-[#087E8B] mb-2">🧑‍💻 ทรัพยากรทางเทคนิค</h3>
+                    <p>เรามีทีมไอทีภายในที่มีความเชี่ยวชาญด้านเซิร์ฟเวอร์ เครือข่าย และความปลอดภัยเพื่อจัดการระบบ on-premise หรือไม่?</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-[#087E8B] mb-2">⚖️ การควบคุม vs. ความสะดวกสบาย</h3>
+                    <p>การควบคุมข้อมูลและโครงสร้างพื้นฐานของเราทั้งหมดสำคัญกว่าความสะดวกสบายของบริการที่มีการจัดการเต็มรูปแบบจากบุคคลที่สามหรือไม่?</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+<script>
+    const wrapLabel = (label, maxWidth) => {
+        if (label.length <= maxWidth) {
+            return label;
+        }
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        words.forEach(word => {
+            if ((currentLine + ' ' + word).trim().length > maxWidth && currentLine.length > 0) {
+                lines.push(currentLine);
+                currentLine = word;
+            } else {
+                currentLine = (currentLine + ' ' + word).trim();
+            }
+        });
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+        return lines;
+    };
+
+    const sharedTooltipConfig = {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    // Radar Chart
+    const radarCtx = document.getElementById('radarChart').getContext('2d');
+    new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+            labels: ['การควบคุมและปรับแต่ง', 'ต้นทุนเริ่มต้นต่ำ', 'ต้นทุนระยะยาวต่ำ', 'ความสามารถในการขยาย', 'การบำรุงรักษาต่ำ'],
+            datasets: [{
+                label: 'On-Premise',
+                data: [10, 2, 8, 7, 3],
+                backgroundColor: 'rgba(255, 90, 95, 0.2)',
+                borderColor: '#FF5A5F',
+                pointBackgroundColor: '#FF5A5F',
+            }, {
+                label: 'Hybrid-Cloud',
+                data: [7, 5, 6, 8, 7],
+                backgroundColor: 'rgba(8, 126, 139, 0.2)',
+                borderColor: '#087E8B',
+                pointBackgroundColor: '#087E8B',
+            }, {
+                label: 'Full-Cloud',
+                data: [4, 9, 3, 9, 10],
+                backgroundColor: 'rgba(191, 215, 234, 0.4)',
+                borderColor: '#BFD7EA',
+                pointBackgroundColor: '#BFD7EA',
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: '#e2e8f0' },
+                    grid: { color: '#e2e8f0' },
+                    pointLabels: { font: { size: 12, family: "'Sarabun', sans-serif" }, color: '#475569'},
+                    ticks: {
+                        backdropColor: 'rgba(240, 244, 248, 0)',
+                        color: '#64748b',
+                        stepSize: 2
+                    }
+                }
+            },
+            plugins: {
+                legend: { 
+                    position: 'top',
+                    labels: {
+                        font: {
+                            family: "'Sarabun', sans-serif",
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Individual Solution Charts (Pros/Cons)
+    const createSolutionChart = (canvasId, prosData, consData) => {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        const prosLabels = Object.keys(prosData);
+        const consLabels = Object.keys(consData);
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [...prosLabels, ...consLabels],
+                datasets: [{
+                    label: 'คะแนนผลกระทบ',
+                    data: [...Object.values(prosData), ...Object.values(consData).map(v => -v)],
+                    backgroundColor: (context) => {
+                        const value = context.dataset.data[context.dataIndex];
+                        return value > 0 ? '#087E8B' : '#FF5A5F';
+                    },
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#64748b' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#475569', font: { family: "'Sarabun', sans-serif", size: 12 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'การวิเคราะห์ข้อดี-ข้อเสีย', color: '#0B3954', font: {size: 16, family: "'Sarabun', sans-serif"} }
+                }
+            }
+        });
+    };
+
+    createSolutionChart('onPremiseChart', {'ควบคุมได้ทั้งหมด': 10, 'ปรับแต่งได้เต็มที่': 9}, {'ต้นทุนเริ่มต้นสูง': 9, 'การบำรุงรักษาสูง': 8});
+    createSolutionChart('hybridChart', {'สมดุลและเชื่อถือได้': 9, 'ลดความซับซ้อน': 8}, {'มีค่าใช้จ่ายต่อเนื่อง': 6, 'ขึ้นอยู่กับ API': 5});
+    createSolutionChart('cloudChart', {'การบำรุงรักษาต่ำ': 10, 'ขยายระบบเร็ว': 9}, {'ต้นทุนระยะยาวสูง': 8, 'ควบคุมได้น้อย': 7});
+
+    // Cost Chart
+    const costCtx = document.getElementById('costChart').getContext('2d');
+    new Chart(costCtx, {
+        type: 'bar',
+        data: {
+            labels: ['On-Premise', 'Hybrid-Cloud', 'Full-Cloud'],
+            datasets: [
+                {
+                    label: 'ฮาร์ดแวร์และการติดตั้ง (CapEx)',
+                    data: [60, 25, 5],
+                    backgroundColor: '#0B3954',
+                },
+                {
+                    label: 'ซอฟต์แวร์และไลเซนส์ (OpEx)',
+                    data: [5, 25, 55],
+                    backgroundColor: '#087E8B',
+                },
+                {
+                    label: 'การบำรุงรักษาและบุคลากร (OpEx)',
+                    data: [35, 15, 5],
+                    backgroundColor: '#BFD7EA',
+                }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true, grid: { display: false }, ticks: { color: '#475569', font: {size: 14, family: "'Sarabun', sans-serif"} } },
+                y: { stacked: true, ticks: { color: '#64748b', callback: (value) => value + 'K Bath' }, grid: {color: '#e2e8f0'} }
+            },
+            plugins: {
+                legend: { 
+                    position: 'top',
+                    labels: {
+                        font: {
+                            family: "'Sarabun', sans-serif",
+                            size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Bath' }).format(context.parsed.y * 1000);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
