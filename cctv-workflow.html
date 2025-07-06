@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ขั้นตอนการแจ้งเตือน CCTV ด้วย AI</title>
+    
+    <!-- Google Fonts for Thai Language -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* General Styling & Modern Enhancements */
+        :root {
+            --primary-color: #0052D4;
+            --secondary-color: #65C7F7;
+            --dark-blue: #0A2463;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --background-color: #F0F4F8;
+            --card-background: rgba(255, 255, 255, 0.6);
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, var(--background-color) 0%, #E0E7FF 100%);
+            color: var(--text-primary);
+            margin: 0;
+            padding-top: 80px; 
+            overflow-x: hidden;
+        }
+
+        /* --- MODERN MENU BAR --- */
+        .top-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            padding: 1rem 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .top-menu ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            display: inline-block;
+        }
+
+        .top-menu li {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        .top-menu a {
+            color: var(--dark-blue);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .top-menu a:hover, .top-menu a.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 82, 212, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            width: 95%;
+            padding: 0 1rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Header Section */
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- NEW VISUAL WORKFLOW DIAGRAM --- */
+        .visual-workflow {
+            background: var(--card-background);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .visual-workflow-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 2.5rem;
+        }
+        
+        .flow-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .flow-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            background-color: #fff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 82, 212, 0.1);
+            margin-bottom: 0.75rem;
+        }
+        
+        .flow-icon.alert-icon {
+             font-size: 1.8rem;
+             width: 60px;
+             height: 60px;
+        }
+
+        .flow-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--primary-color);
+            opacity: 0.6;
+        }
+        
+        .flow-branch-line {
+            width: 2px;
+            height: 40px;
+            background-color: var(--primary-color);
+            opacity: 0.3;
+        }
+
+        .flow-alerts {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .flow-row {
+                flex-direction: column;
+            }
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+        /* --- END OF VISUAL WORKFLOW DIAGRAM --- */
+
+        /* Workflow Steps Container */
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        /* Modernized Step Card */
+        .step {
+            background: var(--card-background);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 40px rgba(0, 82, 212, 0.15);
+        }
+
+        .step .icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 1rem;
+        }
+
+        .step p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            flex-grow: 1;
+        }
+
+        .step strong {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        /* Modernized Actions Container */
+        .actions-container {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .action-item:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.03);
+        }
+        
+        .action-item .icon {
+            font-size: 1.8rem;
+            margin-right: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .action-item-text h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+        
+        .action-item-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            .container {
+                width: 100%;
+                padding: 0 1rem;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+            header p {
+                font-size: 1.1rem;
+            }
+            .top-menu li {
+                margin: 0 5px;
+            }
+            .top-menu a {
+                padding: 0.5rem;
+            }
+            .workflow-steps {
+                gap: 1.5rem;
+            }
+            .step {
+                padding: 2rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="top-menu">
+        <ul>
+            <li><a href="index.html" >Home</a></li>
+            <li><a href="cctv-workflow.html" class="active">Workflow</a></li>
+        </ul>
+    </nav>
+
+    <div class="container" id="workflow-container">
+        <header>
+            <h1>ขั้นตอนการแจ้งเตือน CCTV ด้วย AI</h1>
+            <p>การทำงานร่วมกันของ VMS, n8n และ Django เพื่อสร้างระบบตอบสนองต่อเหตุการณ์อัตโนมัติที่ทันสมัยและมีประสิทธิภาพ</p>
+        </header>
+
+        <!-- New Visual Workflow Diagram Section -->
+        <section class="visual-workflow">
+            <h2 class="visual-workflow-title">ภาพรวมขั้นตอนการทำงาน</h2>
+            <div class="flow-main">
+                <div class="flow-row">
+                    <div class="flow-item">
+                        <div class="flow-icon"><i class="fa-solid fa-video"></i></div>
+                        <div class="flow-label">กล้อง VMS</div>
+                    </div>
+                    <div class="flow-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+                    <div class="flow-item">
+                        <div class="flow-icon"><i class="fa-solid fa-microchip"></i></div>
+                        <div class="flow-label">เวิร์กโฟลว์ n8n</div>
+                    </div>
+                    <div class="flow-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+                    <div class="flow-item">
+                        <div class="flow-icon"><i class="fa-solid fa-server"></i></div>
+                        <div class="flow-label">Django</div>
+                    </div>
+                </div>
+                <div class="flow-branch-line"></div>
+                <div class="flow-alerts">
+                    <div class="flow-item">
+                        <div class="flow-icon alert-icon" style="color: #E63946;"><i class="fa-solid fa-desktop"></i></div>
+                        <div class="flow-label">แจ้งเตือนบนจอ</div>
+                    </div>
+                     <div class="flow-item">
+                        <div class="flow-icon alert-icon" style="color: #F4A261;"><i class="fa-solid fa-envelope"></i></div>
+                        <div class="flow-label">อีเมล</div>
+                    </div>
+                     <div class="flow-item">
+                        <div class="flow-icon alert-icon" style="color: #2A9D8F;"><i class="fa-brands fa-line"></i></div>
+                        <div class="flow-label">LINE</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End of New Section -->
+
+        <main class="workflow-steps">
+
+            <div class="step" id="step1">
+                <div class="icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                <h2>1. การตรวจจับ: เหตุการณ์</h2>
+                <p><strong>คืออะไร:</strong> ระบบ VMS (Video Management System) หลัก ตรวจจับเหตุการณ์ที่กำหนดไว้ล่วงหน้า เช่น การเคลื่อนไหวในพื้นที่หวงห้ามหลังเวลาทำการ</p>
+                <p><strong>การทำงาน:</strong> ระบบจะส่งข้อมูลเหตุการณ์ (ID กล้อง, เวลา, ประเภทเหตุการณ์) ไปยัง URL ของ n8n webhook ทันที</p>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="icon"><i class="fa-solid fa-microchip"></i></div>
+                <h2>2. AI และกฎ: สมองกล (n8n)</h2>
+                <p><strong>คืออะไร:</strong> n8n workflow รับข้อมูลและทำหน้าที่เป็นเครื่องมือจัดการกฎอัจฉริยะ</p>
+                <p><strong>การทำงาน:</strong> ประมวลผลตรรกะที่เรากำหนดเอง เช่น `ถ้าเหตุการณ์คือ 'การเคลื่อนไหว' และเวลาคือหลัง '22:00 น.' ให้ส่งการแจ้งเตือน`</p>
+            </div>
+
+            <div class="step" id="step3">
+                <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h2>3. การควบคุม: ศูนย์กลาง (Django)</h2>
+                <p><strong>คืออะไร:</strong> เว็บแอปพลิเคชัน Django ที่ปลอดภัยทำหน้าที่เป็นศูนย์ควบคุมหลักสำหรับผู้ใช้งาน</p>
+                <p><strong>การทำงาน:</strong> รับ API call จาก n8n เพื่อบันทึกเหตุการณ์ลงในฐานข้อมูล และเตรียมแจ้งเตือนผู้ใช้งานแบบสด</p>
+            </div>
+
+            <div class="step" id="step4">
+                 <div class="icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+                <h2>4. การแจ้งเตือน: การดำเนินการ</h2>
+                <p>เมื่อตรงตามกฎ n8n และ Django จะดำเนินการแจ้งเตือน 3 รูปแบบพร้อมกัน</p>
+                
+                <div class="actions-container">
+                    <div class="action-item">
+                        <div class="icon" style="color: #E63946;"><i class="fa-solid fa-desktop"></i></div>
+                        <div class="action-item-text">
+                           <h3>แจ้งเตือนบนหน้าจอทันที</h3>
+                           <p>web application ใช้ WebSockets เพื่อส่งการแจ้งเตือนแบบเรียลไทม์ไปยัง "จอแสดงผลหลัก" บนหน้าจอของผู้ใช้งาน</p>
+                        </div>
+                    </div>
+                    <div class="action-item">
+                         <div class="icon" style="color: #F4A261;"><i class="fa-solid fa-envelope-open-text"></i></div>
+                        <div class="action-item-text">
+                           <h3>แจ้งเตือนทางอีเมล</h3>
+                           <p>n8n จะสร้างและส่งรายงานเหตุการณ์โดยละเอียดไปยังรายชื่อผู้รับอีเมลด้านความปลอดภัยที่กำหนดไว้โดยอัตโนมัติ</p>
+                        </div>
+                    </div>
+                    <div class="action-item">
+                        <div class="icon" style="color: #2A9D8F;"><i class="fa-brands fa-line"></i></div>
+                        <div class="action-item-text">
+                           <h3>แจ้งเตือนผ่าน LINE</h3>
+                           <p>n8n เรียกใช้ LINE webservice API เพื่อส่งข้อความโดยตรงไปยังบุคคลหรือกลุ่มแชทที่ระบุไว้ทันที</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>

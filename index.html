@@ -10,10 +10,77 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        html {
+            scroll-behavior: smooth; /* Enables smooth scrolling */
+        }
+
+		/* General Styling & Modern Enhancements */
+        :root {
+            --primary-color: #0052D4;
+            --secondary-color: #65C7F7;
+            --dark-blue: #0A2463;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --background-color: #F0F4F8;
+            --card-background: rgba(255, 255, 255, 0.6);
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Sarabun', sans-serif;
-            background-color: #f0f4f8;
-            color: #1e293b;
+            background: linear-gradient(135deg, var(--background-color) 0%, #E0E7FF 100%);
+            color: var(--text-primary);
+            margin: 0;
+            padding-top: 80px; 
+            overflow-x: hidden;
+        }
+		
+		.top-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            padding: 1rem 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .top-menu ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            display: inline-block;
+        }
+
+        .top-menu li {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        .top-menu a {
+            color: var(--dark-blue);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .top-menu a:hover, .top-menu a.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 82, 212, 0.3);
         }
         .chart-container {
             position: relative;
@@ -27,6 +94,9 @@
         @media (max-width: 768px) {
             .chart-container {
                 height: 300px;
+            }
+             body {
+                padding-top: 60px;
             }
         }
         .flow-node {
@@ -61,13 +131,21 @@
     <!-- Palette: Brilliant Blues (#0B3954, #087E8B, #BFD7EA, #FF5A5F) -->
     <!-- No Mermaid JS or SVG graphics were used in this file. -->
 
+    <!-- New Top Menu Bar -->
+    <nav class="top-menu">
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="cctv-workflow.html">Workflow</a></li>
+        </ul>
+    </nav>
+
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         <header class="text-center mb-12">
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0B3954] mb-4">ไพที กรุป CCTV Center</h1>
             <p class="text-base sm:text-lg md:text-xl text-slate-600">คู่มือเปรียบเทียบโซลูชันแบบเห็นภาพ เพื่อช่วยเราตัดสินใจระหว่าง On-Premise, Hybrid และ Full-Cloud</p>
         </header>
 
-        <main>
+        <main id="workflow">
             <!-- Section 1: High-Level Comparison Radar Chart -->
             <section class="mb-16">
                 <div class="kpi-card">
@@ -116,15 +194,15 @@
                             <div class="flow-arrow">↓</div>
                             <div class="flow-node w-full">⚙️ เซิร์ฟเวอร์ VMS ในองค์กร</div>
                              <div class="flex justify-around w-full mt-2">
-                                <div class="flex flex-col items-center">
-                                    <div class="flow-arrow">↙</div>
-                                    <div class="flow-node">🗄️ ที่เก็บข้อมูลหลัก</div>
-                                </div>
-                                <div class="flex flex-col items-center">
-                                    <div class="flow-arrow">↘</div>
-                                    <div class="flow-node">☁️ ที่เก็บข้อมูลบนคลาวด์</div>
-                                </div>
-                            </div>
+                                 <div class="flex flex-col items-center">
+                                     <div class="flow-arrow">↙</div>
+                                     <div class="flow-node">🗄️ ที่เก็บข้อมูลหลัก</div>
+                                 </div>
+                                 <div class="flex flex-col items-center">
+                                     <div class="flow-arrow">↘</div>
+                                     <div class="flow-node">☁️ ที่เก็บข้อมูลบนคลาวด์</div>
+                                 </div>
+                             </div>
                         </div>
 
                         <div class="chart-container h-72 md:h-80 mt-auto">
@@ -354,7 +432,7 @@
             maintainAspectRatio: false,
             scales: {
                 x: { stacked: true, grid: { display: false }, ticks: { color: '#475569', font: {size: 14, family: "'Sarabun', sans-serif"} } },
-                y: { stacked: true, ticks: { color: '#64748b', callback: (value) => value + 'K Bath' }, grid: {color: '#e2e8f0'} }
+                y: { stacked: true, ticks: { color: '#64748b', callback: (value) => value + 'K THB' }, grid: {color: '#e2e8f0'} }
             },
             plugins: {
                 legend: { 
@@ -374,7 +452,7 @@
                                 label += ': ';
                             }
                             if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Bath' }).format(context.parsed.y * 1000);
+                                label += new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', minimumFractionDigits: 0 }).format(context.parsed.y * 1000);
                             }
                             return label;
                         }
