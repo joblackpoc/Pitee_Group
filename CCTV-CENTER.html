@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PITEE-CCTV Control Center</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e3a8a;
+            --secondary: #0f172a;
+            --accent: #06b6d4;
+            --accent-light: #22d3ee;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --light: #f8fafc;
+            --light-gray: #f1f5f9;
+            --medium-gray: #64748b;
+            --dark-gray: #334155;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --gradient-primary: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--primary-light));
+            --gradient-accent: linear-gradient(135deg, var(--accent), var(--accent-light));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Sarabun', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            color: var(--secondary);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* Enhanced Header */
+        header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Progress Indicator */
+        .progress-container {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 2rem;
+            z-index: 100;
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--light-gray);
+            z-index: 1;
+        }
+        
+        .progress-fill {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transition: width 0.5s ease;
+            z-index: 2;
+            width: 0%;
+        }
+        
+        .progress-step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 3;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .progress-step.active {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+        }
+        
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--medium-gray);
+            margin-top: 0.5rem;
+        }
+        
+        /* Enhanced Phase Cards */
+        .phase {
+            background: white;
+            border-radius: 1rem;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .phase:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .phase h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .phase-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        /* Enhanced Hardware Grid */
+        .hardware-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .hardware-card {
+            background: linear-gradient(135deg, white, #fafbfc);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hardware-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-accent);
+        }
+        
+        .hardware-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .hardware-card h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .hardware-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .hardware-specs {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .spec-label {
+            font-weight: 600;
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+        }
+        
+        .spec-value {
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 0.875rem;
+        }
+        
+        /* Enhanced Steps */
+        .steps-container {
+            margin: 2rem 0;
+        }
+        
+        .step {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+        
+        .step h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+        
+        /* Enhanced Lists */
+        .step ol, .step ul {
+            margin: 1rem 0;
+            padding-left: 0;
+        }
+        
+        .step ol li, .step ul li {
+            background: var(--light);
+            margin: 0.75rem 0;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent);
+            list-style: none;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .step ol li:hover, .step ul li:hover {
+            background: var(--light-gray);
+            transform: translateX(4px);
+        }
+        
+        .step ol {
+            counter-reset: step-counter;
+        }
+        
+        .step ol li {
+            counter-increment: step-counter;
+        }
+        
+        .step ol li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        
+        .step ul li::before {
+            content: '•';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        
+        /* Enhanced Notes */
+        .note {
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .note::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        .note h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .note-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+        
+        .note.info {
+            background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+        }
+        
+        .note.info::before {
+            background: var(--accent);
+        }
+        
+        .note.info .note-icon {
+            background: var(--accent);
+        }
+        
+        .note.warning {
+            background: linear-gradient(135deg, #fef3c7, #fed7aa);
+        }
+        
+        .note.warning::before {
+            background: var(--warning);
+        }
+        
+        .note.warning .note-icon {
+            background: var(--warning);
+        }
+        
+        .note.success {
+            background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+        }
+        
+        .note.success::before {
+            background: var(--success);
+        }
+        
+        .note.success .note-icon {
+            background: var(--success);
+        }
+        
+        /* Code Styling */
+        .code {
+            font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: #e2e8f0;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            display: inline-block;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Cost Summary */
+        .cost-summary {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cost-summary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        
+        .cost-amount {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cost-description {
+            font-size: 1.125rem;
+            opacity: 0.9;
+        }
+        
+        /* Timeline Visualization */
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 2rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-primary);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 4rem;
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: 1rem;
+            top: 0.5rem;
+            width: 2rem;
+            height: 2rem;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        
+        /* Network Diagram */
+        .network-diagram {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .network-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .network-node {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+        
+        .network-arrow {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        /* Enhanced Footer */
+        footer {
+            background: var(--secondary);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-light);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hardware-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-container {
+                position: static;
+            }
+            
+            .progress-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-bar::before {
+                display: none;
+            }
+            
+            .network-flow {
+                flex-direction: column;
+            }
+            
+            .network-arrow {
+                transform: rotate(90deg);
+            }
+        }
+        
+        /* Scroll Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-primary { color: var(--primary); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mt-4 { margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="top-menu">
+            <ul>
+                <li><a href="index.html" >Home</a></li>
+                <li><a href="CCTV-CENTER.html">CCTV-CENTER</a></li>
+                <li><a href="cctv-workflow.html" class="active">Workflow</a></li>
+            </ul>
+        </nav>
+        <div class="container">
+            <div class="header-content">
+                <h1><i class="fas fa-shield-alt"></i> PITEE-CCTV CENTER</h1>
+                <p class="subtitle"> NVR และระบบ Video Wall</p>
+                <div class="cost-summary">
+                    <!--<div class="cost-amount">50,000 - 100,000</div>-->
+                    <div class="cost-description">ระบบ Camera 10-15 ตัวพร้อม Video Wall 3 - 5 Monitor</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-step active" data-phase="1">1</div>
+                <div class="progress-step" data-phase="2">2</div>
+                <div class="progress-step" data-phase="3">3</div>
+                <div class="progress-step" data-phase="4">4</div>
+                <div class="progress-step" data-phase="5">5</div>
+                <div class="progress-step" data-phase="6">6</div>
+            </div>
+            <div class="progress-labels">
+                <span>การวางแผน</span>
+                <span>Network</span>
+                <span>ติดตั้ง NVR</span>
+                <span>Video Wall</span>
+                <span>การติดตาม</span>
+                <span>การทดสอบ</span>
+            </div>
+        </div>
+        
+        <section class="phase" id="phase1">
+            <h2>
+                <div class="phase-icon"><i class="fas fa-clipboard-list"></i></div>
+                Phase 1: การวางแผนและการจัดหา Hardware
+            </h2>
+            
+            <div class="hardware-grid">
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-server"></i></div>
+                        NVR (Network Video Recorder)
+                    </h4>
+                    <div class="hardware-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">รุ่น</span>
+                            <span class="spec-value">Hikvision</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">จำนวน</span>
+                            <span class="spec-value">1 เครื่อง</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">ราคา</span>
+                            <span class="spec-value">~10,000</span>
+                        </div>
+                    </div>
+                    <p>ศูนย์กลางการบันทึกและจัดเก็บข้อมูลสำหรับ Camera ทั้งหมด พร้อมฟีเจอร์การบีบอัดและการจัดการขั้นสูง</p>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-desktop"></i></div>
+                        Video Wall Controller หรือ Multi Screen Splicing
+                    </h4>
+                    <div class="hardware-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">รุ่น</span>
+                            <span class="spec-value">Video Wall Controller หรือ Splicer</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">จำนวน</span>
+                            <span class="spec-value">1 เครื่อง</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">ราคา</span>
+                            <span class="spec-value">~15,000</span>
+                        </div>
+                    </div>
+                    <p>Controller ขั้นสูงจัดการ output 5 Monitor พร้อมการจัดวางแบบยืดหยุ่นและการสลับแบบ real-time</p>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-video"></i></div>
+                        IP Security Camera
+                    </h4>
+                    <div class="hardware-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">รุ่น</span>
+                            <span class="spec-value">Hikvision</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">จำนวน</span>
+                            <span class="spec-value">10+ ตัว</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">ราคา</span>
+                            <span class="spec-value">~2,000 ต่อตัว</span>
+                        </div>
+                    </div>
+                    <p>Camera ความละเอียดสูง 4MP PoE พร้อม night vision ขั้นสูงและ motion detection อัจฉริยะ</p>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-network-wired"></i></div>
+                        โครงสร้าง Network
+                    </h4>
+                    <div class="hardware-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">Router</span>
+                            <span class="spec-value">MikroTik RB4011 (4 ตัว)</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">Switch</span>
+                            <span class="spec-value">TP-Link TL-SG1016PE (3 ตัว)</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">ราคา</span>
+                            <span class="spec-value">15,000</span>
+                        </div>
+                    </div>
+                    <p>อุปกรณ์ Network ระดับองค์กรพร้อมการรองรับ PoE และฟีเจอร์ความปลอดภัยขั้นสูง</p>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-hdd"></i></div>
+                        Storage และ Display
+                    </h4>
+                    <div class="hardware-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">HDD</span>
+                            <span class="spec-value">Seagate SkyHawk 8TB (2-4 ลูก)</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">Monitor</span>
+                            <span class="spec-value">LG Monitor (5 ตัว)</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">ราคา</span>
+                            <span class="spec-value">~10,000</span>
+                        </div>
+                    </div>
+                    <p>Hard drive เฉพาะสำหรับงาน surveillance และ Monitor ระดับมืออาชีพสำหรับการทำงาน 24/7</p>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-tools"></i></div>
+                        อุปกรณ์ติดตั้ง
+                    </h4>
+                    <div class="hardware-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">สาย</span>
+                            <span class="spec-value">Cat6, HDMI, Power</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">ขาจับ</span>
+                            <span class="spec-value">Camera และ Monitor Mount</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">ราคา</span>
+                            <span class="spec-value">~3,000</span>
+                        </div>
+                    </div>
+                    <p>Hardware การติดตั้งแบบมืออาชีพและสายคุณภาพสูงสำหรับการติดตั้งที่เชื่อถือได้</p>
+                </div>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">1</div>
+                    <h4>การสำรวจพื้นที่และการวางแผน</h4>
+                    <p>ทำการประเมินพื้นที่อย่างละเอียดและสร้าง blueprint การติดตั้ง</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">2</div>
+                    <h4>การจัดหา Hardware</h4>
+                    <p>สั่งซื้ออุปกรณ์ทั้งหมดและตรวจสอบความเข้ากันได้ก่อนการติดตั้ง</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">3</div>
+                    <h4>การทดสอบก่อนติดตั้ง</h4>
+                    <p>ทดสอบ component ทั้งหมดในสภาพแวดล้อมที่ควบคุมได้ก่อนการติดตั้งจริง</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="phase" id="phase2">
+            <h2>
+                <div class="phase-icon"><i class="fas fa-network-wired"></i></div>
+                Phase 2: สถาปัตยกรรม Network และการตั้งค่าความปลอดภัย
+            </h2>
+            
+            <div class="network-diagram">
+                <h3>ภาพรวม Network Topology</h3>
+                <div class="network-flow">
+                    <div class="network-node">Remote Sites</div>
+                    <div class="network-arrow">→</div>
+                    <div class="network-node">VPN Tunnel</div>
+                    <div class="network-arrow">→</div>
+                    <div class="network-node">สำนักงานไพที</div>
+                    <div class="network-arrow">→</div>
+                    <div class="network-node">NVR</div>
+                    <div class="network-arrow">→</div>
+                    <div class="network-node">Video Wall</div>
+                </div>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>การตั้งค่าโครงสร้าง MikroTik VPN</h3>
+                    </div>
+                    <p>สร้างการเชื่อมต่อที่ปลอดภัยและเข้ารหัสระหว่าง Remote Site ทั้งหมดกับศูนย์ควบคุมหลัก:</p>
+                    <ol>
+                        <li>เชื่อมต่อกับ MikroTik Router แต่ละตัวผ่าน application <span class="code">WinBox</span> (IP เริ่มต้น: <span class="code">192.168.88.1</span>)</li>
+                        <li>ไปที่ <span class="code">IP → IPsec → Peers</span> และตั้งค่า peer connection ใหม่ด้วย public IP address ของ router สำนักงานใหญ่</li>
+                        <li>ตั้งค่า shared key authentication ด้วยการเข้ารหัสแรงขั้นต่ำ 256-bit</li>
+                        <li>เปิดใช้งาน Phase 1 (IKE) และ Phase 2 (ESP) ด้วยการเข้ารหัส AES-256-GCM และการยืนยันตัวตน SHA-256</li>
+                        <li>ตั้งค่า NAT traversal สำหรับ Site ที่อยู่หลัง firewall/NAT device</li>
+                        <li>ทดสอบการเชื่อมต่อโดยการ ping IP LAN ของ NVR จาก Remote Site แต่ละแห่ง</li>
+                        <li>ใช้กลไก failover สำหรับการเชื่อมต่อซ้ำซ้อน</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>การแบ่งกลุ่ม Network และความปลอดภัย</h3>
+                    </div>
+                    <p>ใช้ความปลอดภัย Network ที่แข็งแกร่งผ่านการแยก VLAN และ access control:</p>
+                    <ol>
+                        <li>สร้าง VLAN 10 เฉพาะสำหรับ surveillance camera บน PoE switch ทั้งหมด</li>
+                        <li>ตั้งค่า VLAN 20 สำหรับ management interface และการเข้าถึง NVR</li>
+                        <li>ใช้ inter-VLAN routing ด้วย access control list (ACL) ที่เข้มงวด</li>
+                        <li>บล็อกการเข้าถึง internet ของ camera ผ่าน firewall rule เพื่อป้องกันการโจมตีจากภายนอก</li>
+                        <li>ตั้งค่า Quality of Service (QoS) เพื่อให้ความสำคัญกับ video traffic มากกว่า network traffic อื่น</li>
+                        <li>ตั้งค่า network monitoring และ intrusion detection system</li>
+                        <li>ใช้ MAC address filtering เป็นชั้นความปลอดภัยเพิ่มเติม</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>การปรับ Network ให้เหมาะสมขั้นสูง</h3>
+                    </div>
+                    <p>ปรับประสิทธิภาพ Network สำหรับการสตรีม video คุณภาพสูง:</p>
+                    <ol>
+                        <li>ตั้งค่า multicast routing สำหรับการกระจาย video ที่มีประสิทธิภาพ</li>
+                        <li>ตั้งค่า link aggregation (LACP) เพื่อเพิ่ม bandwidth</li>
+                        <li>ใช้ network time protocol (NTP) synchronization ข้าม device ทั้งหมด</li>
+                        <li>ตั้งค่า SNMP monitoring สำหรับการจัดการสุขภาพ network แบบเชิงรุก</li>
+                        <li>ตั้งค่า bandwidth monitoring และ alerting threshold</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="note warning">
+                <h3><i class="fas fa-exclamation-triangle" class="note-icon"></i>แนวทางปฏิบัติด้านความปลอดภัยที่ดี</h3>
+                <p>เปลี่ยน credential เริ่มต้นเสมอ เปิดใช้งานการเข้ารหัส WPA3 สำหรับการเชื่อมต่อ wireless และอัปเดต firmware บน network device ทั้งหมดอย่างสม่ำเสมอ ใช้การยืนยันตัวตน VPN แบบ certificate สำหรับความปลอดภัยที่เพิ่มขึ้น</p>
+            </div>
+        </section>
+        
+        <section class="phase" id="phase3">
+            <h2>
+                <div class="phase-icon"><i class="fas fa-server"></i></div>
+                Phase 3: การตั้งค่า NVR และการรวม Camera
+            </h2>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>การเริ่มต้นระบบ NVR</h3>
+                    </div>
+                    <p>ตั้งค่าระบบบันทึกหลักด้วยการตั้งค่า storage ที่เหมาะสม:</p>
+                    <ol>
+                        <li>เชื่อมต่อ NVR กับ management VLAN (VLAN 20) ด้วยการกำหนด static IP</li>
+                        <li>ติดตั้ง surveillance-grade HDD ในการตั้งค่า RAID 5 เพื่อความซ้ำซ้อน</li>
+                        <li>เปิดระบบและทำ initial setup wizard ให้เสร็จสิ้น</li>
+                        <li>เข้าถึง web interface ของ NVR และไปที่ <span class="code">Storage → Disk Management</span></li>
+                        <li>Format drive และตั้งค่า storage quota ต่อ camera channel</li>
+                        <li>ตั้งโหมดการบันทึกเป็น <strong>continuous + motion detection</strong> เพื่อการครอบคลุมที่เหมาะสม</li>
+                        <li>ตั้งค่า automatic disk cleanup policy เพื่อจัดการพื้นที่ storage</li>
+                        <li>เปิดใช้งาน SMART monitoring เพื่อการตรวจจับความผิดปกติของ drive แบบ predictive</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>การค้นหาและตั้งค่า Camera</h3>
+                    </div>
+                    <p>รวม IP camera ทั้งหมดด้วยการตั้งค่า streaming ที่เหมาะสม:</p>
+                    <ol>
+                        <li>ไปที่ <span class="code">Camera → Remote Device → Auto Search</span> เพื่อค้นหา ONVIF-compatible camera</li>
+                        <li>สำหรับการเพิ่มแบบ manual: ใส่ IP address ของ camera ด้วย credential ที่อัปเดตแล้ว (ไม่ใช้ค่าเริ่มต้น)</li>
+                        <li>ตั้งค่า dual-stream setting สำหรับ camera แต่ละตัว:
+                            <ul>
+                                <li><strong>Main Stream:</strong> 4MP @ 15fps (H.265, 8Mbps) สำหรับการบันทึก</li>
+                                <li><strong>Sub-Stream:</strong> 720p @ 10fps (H.264, 2Mbps) สำหรับการติดตาม live</li>
+                            </ul>
+                        </li>
+                        <li>เปิดใช้งานฟีเจอร์ smart recording (motion detection, line crossing, intrusion detection)</li>
+                        <li>ตั้งค่าเฉพาะ camera (exposure, WDR, noise reduction)</li>
+                        <li>ตั้งค่า privacy masking สำหรับพื้นที่ที่มีความอ่อนไหว</li>
+                        <li>ทดสอบ camera feed ทั้งหมดและตรวจสอบการทำงานของการบันทึก</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>ฟีเจอร์การบันทึกขั้นสูง</h3>
+                    </div>
+                    <p>ตั้งค่าการบันทึกอัจฉริยะและการจัดการเหตุการณ์:</p>
+                    <ol>
+                        <li>ตั้งค่าโซน motion detection ด้วยระดับความไวที่ปรับได้</li>
+                        <li>ตั้งค่า event-triggered action (email alert, mobile notification)</li>
+                        <li>เปิดใช้งาน facial recognition และ license plate recognition ที่เหมาะสม</li>
+                        <li>ตั้งค่าการบันทึกสำรองไปยัง secondary storage หรือ cloud</li>
+                        <li>ตั้งค่า automatic video export สำหรับการจัดการเหตุการณ์</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="note info">
+                <h3><i class="fas fa-info-circle" class="note-icon"></i>การคำนวณ Storage</h3>
+                <p>สำหรับ camera 10 ตัวที่บันทึก 24/7 ในรูปแบบ H.265 ที่ 8Mbps: ประมาณ 8.6TB ต่อเดือน วางแผนสำหรับการเก็บ 3-6 เดือนด้วยความซ้ำซ้อน RAID</p>
+            </div>
+            
+            <div class="note warning">
+                <h3><i class="fas fa-shield-alt" class="note-icon"></i>การตั้งค่าความปลอดภัย</h3>
+                <p>เปลี่ยน password เริ่มต้นทั้งหมดทันที เปิดใช้งาน two-factor authentication ตั้งค่า IP whitelisting และตั้งค่าการเข้าถึง HTTPS ที่เข้ารหัสสำหรับการจัดการระยะไกล</p>
+            </div>
+        </section>
+        
+        <section class="phase" id="phase4">
+            <h2>
+                <div class="phase-icon"><i class="fas fa-desktop"></i></div>
+                Phase 4: Video Wall Controller และการตั้งค่า Display
+            </h2>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>การเชื่อมต่อ Hardware และการเริ่มต้น</h3>
+                    </div>
+                    <p>สร้างการกระจาย video คุณภาพสูงข้าม display หลายตัว:</p>
+                    <ol>
+                        <li>เชื่อมต่อ output หลักของ NVR กับ input ของ Video Wall Controller ผ่าน HDMI 2.0 หรือ DisplayPort สำหรับสัญญาณ 4K</li>
+                        <li>เชื่อมต่อ monitor ทั้ง 5 ตัวกับ output ของ controller โดยใช้สายที่เหมาะสม (HDMI/DisplayPort)</li>
+                        <li>ตรวจสอบว่าการเชื่อมต่อทั้งหมดแน่นหนาและติดตั้งอย่างถูกต้อง</li>
+                        <li>เปิด device ตามลำดับ: Monitor → Controller → NVR</li>
+                        <li>ตรวจสอบ signal integrity และ resolution บน display ทั้งหมด</li>
+                        <li>ตั้งค่า display orientation และ bezel compensation</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>การตั้งค่า Layout ขั้นสูง</h3>
+                    </div>
+                    <p>สร้าง layout การติดตามแบบ dynamic และมืออาชีพ:</p>
+                    <ol>
+                        <li>เข้าถึง interface ของ Vivotek controller ผ่าน web browser (IP เริ่มต้น: <span class="code">192.168.0.100</span>)</li>
+                        <li>สร้าง preset layout หลายแบบสำหรับสถานการณ์การติดตามที่แตกต่างกัน:
+                            <ul>
+                                <li><strong>Overview Layout:</strong> กริด 3×3 ข้าม monitor 1-4, camera เดี่ยวบน monitor 5</li>
+                                <li><strong>Zone Focus:</strong> camera เฉพาะ site จัดกลุ่มตามสถานที่</li>
+                                <li><strong>Incident Response:</strong> camera ลำดับความสำคัญในมุมมองใหญ่พร้อม feed สนับสนุน</li>
+                                <li><strong>Night Mode:</strong> layout ที่เหมาะสมสำหรับการติดตามแสงน้อย</li>
+                            </ul>
+                        </li>
+                        <li>ตั้งค่าการสลับ layout อัตโนมัติตามเวลาของวันหรือเหตุการณ์</li>
+                        <li>ตั้งค่าการหมุน camera สำหรับการครอบคลุมที่ครอบคลุม</li>
+                        <li>โปรแกรม hotkey และ remote control shortcut สำหรับการเปลี่ยน layout อย่างรวดเร็ว</li>
+                        <li>ทดสอบ layout ทั้งหมดและให้แน่ใจว่าการเปลี่ยนผ่านราบรื่น</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>การปรับ Display ให้เหมาะสมและการ Calibration</h3>
+                    </div>
+                    <p>ให้แน่ใจว่าคุณภาพภาพเหมาะสมที่สุดข้าม monitor ทั้งหมด:</p>
+                    <ol>
+                        <li>ปรับการตั้งค่าสีและระดับความสว่างสำหรับการดูที่สม่ำเสมอ</li>
+                        <li>ตั้งค่า blue light filtering เพื่อความสบายของผู้ปฏิบัติงาน</li>
+                        <li>ตั้งค่าการจัดการไฟ monitor สำหรับประสิทธิภาพพลังงาน</li>
+                        <li>ใช้การป้องกัน anti-burn-in สำหรับองค์ประกอบคงที่</li>
+                        <li>ตั้งค่า on-screen display overlay (เวลา, ชื่อ camera, สถานะ)</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="note success">
+                <h3><i class="fas fa-check-circle" class="note-icon"></i>แนวทางปฏิบัติที่ดีสำหรับ Layout</h3>
+                <p>วาง camera สำคัญในพื้นที่ดูกลาง ใช้รูปแบบกี่สม่ำเสมอ และให้แน่ใจว่า operator control เข้าถึงได้ง่าย พิจารณาปัจจัย ergonomic สำหรับการติดตาม 24/7</p>
+            </div>
+        </section>
+        
+        <section class="phase" id="phase5">
+            <h2>
+                <div class="phase-icon"><i class="fas fa-eye"></i></div>
+                Phase 5: Software การติดตามและ Remote Access
+            </h2>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>การตั้งค่า Client Software มืออาชีพ</h3>
+                    </div>
+                    <p>ติดตั้ง software การติดตามและการจัดการที่ครอบคลุม:</p>
+                    <ol>
+                        <li>ดาวน์โหลดและติดตั้ง iVMS-4200 professional client จากเว็บไซต์อย่างเป็นทางการของ Hikvision</li>
+                        <li>เปิด application และไปที่ <span class="code">Device Management → Add Device</span></li>
+                        <li>ตั้งค่าการเชื่อมต่อ NVR ด้วยการสื่อสารที่เข้ารหัสที่เปิดใช้งาน</li>
+                        <li>สร้าง virtual video wall layout ที่ตรงกับการตั้งค่า monitor ทางกายภาพ</li>
+                        <li>ตั้งค่า user account ด้วย role-based access control (RBAC)</li>
+                        <li>ตั้งค่าการรายงานอัตโนมัติและการจัดการ log</li>
+                        <li>ทดสอบฟีเจอร์ client ทั้งหมดรวมถึง playback, export และ live viewing</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>การตั้งค่า Mobile และ Remote Access</h3>
+                    </div>
+                    <p>เปิดใช้งานความสามารถการติดตามระยะไกลที่ปลอดภัย:</p>
+                    <ol>
+                        <li>ติดตั้งและตั้งค่า Hik-Connect mobile application บน device ที่ได้รับอนุญาต</li>
+                        <li>ตั้งค่า push notification สำหรับเหตุการณ์สำคัญและ system alert</li>
+                        <li>ตั้งค่าการเข้าถึงเว็บผ่าน secure HTTPS portal (port แนะนำ: 8443)</li>
+                        <li>ใช้การเข้าถึงเฉพาะ VPN สำหรับความปลอดภัยที่เพิ่มขึ้น (หลีกเลี่ยงการเปิดรับ internet โดยตรง)</li>
+                        <li>ตั้งค่า geofencing สำหรับ access control ตามสถานที่</li>
+                        <li>ตั้งค่าการดู offline และขั้นตอนการตอบสนองฉุกเฉิน</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>การรวมและ Automation</h3>
+                    </div>
+                    <p>ใช้ automation การติดตามขั้นสูง:</p>
+                    <ol>
+                        <li>ตั้งค่า API integration สำหรับระบบความปลอดภัยของบุคคลที่สาม</li>
+                        <li>ตั้งค่าการรายงานเหตุการณ์อัตโนมัติ</li>
+                        <li>ใช้ intelligent video analytics และ behavioral detection</li>
+                        <li>ตั้งค่า protocol การติดตามสำรองและระบบซ้ำซ้อน</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="note info">
+                <h3><i class="fas fa-mobile-alt" class="note-icon"></i>ฟีเจอร์ Mobile Access</h3>
+                <p>เปิดใช้งาน PTZ control, two-way audio communication, instant replay และฟังก์ชัน emergency alert สำหรับความสามารถการติดตามระยะไกลที่ครอบคลุม</p>
+            </div>
+        </section>
+        
+        <section class="phase" id="phase6">
+            <h2>
+                <div class="phase-icon"><i class="fas fa-check-double"></i></div>
+                Phase 6: การทดสอบระบบและการปรับประสิทธิภาพ
+            </h2>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>การตรวจสอบระบบอย่างครอบคลุม</h3>
+                    </div>
+                    <p>ทำการทดสอบอย่างละเอียดเพื่อให้แน่ใจว่าระบบเชื่อถือได้:</p>
+                    <ol>
+                        <li>ทำการทดสอบ failover โดยการถอดไฟจาก camera หนึ่งตัว → ยืนยันว่า NVR ยังคงบันทึกตัวอื่นต่อไป</li>
+                        <li>ทดสอบการเล่นกลับของ camera 10 ตัวพร้อมกันที่ความละเอียดสูงสุด → ตรวจสอบความล่าช้า</li>
+                        <li>ตรวจสอบการทำงานของ night vision และประสิทธิภาพการส่องสว่าง infrared</li>
+                        <li>ทดสอบความแม่นยำของ motion detection และอัตรา false positive</li>
+                        <li>ทำการทดสอบความเครียด network ด้วยการใช้ bandwidth สูงสุด</li>
+                        <li>ตรวจสอบขั้นตอนการสำรองและการกู้คืนด้วยสถานการณ์สูญเสียข้อมูลจำลอง</li>
+                        <li>ทดสอบ protocol การตอบสนองฉุกเฉินและระบบแจ้งเตือน</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>การปรับประสิทธิภาพและการปรับแต่ง</h3>
+                    </div>
+                    <p>ปรับแต่งประสิทธิภาพระบบสำหรับการทำงานที่เหมาะสม:</p>
+                    <ol>
+                        <li>ปรับ frame rate ของ camera ตามความต้องการ bandwidth และ storage ที่มีอยู่</li>
+                        <li>เปิดใช้งานการบีบอัด H.265+ เพื่อลดความต้องการ storage ได้ถึง 50%</li>
+                        <li>ตั้งค่าการปรับ dynamic bitrate อัจฉริยะสำหรับความซับซ้อนของฉากที่แตกต่างกัน</li>
+                        <li>ตั้งค่าการจัดการ storage อัตโนมัติด้วย retention policy ที่ตั้งค่าได้</li>
+                        <li>ใช้ load balancing ข้าม storage drive หลายตัว</li>
+                        <li>ตั้งค่าการติดตามสุขภาพระบบด้วย predictive maintenance alert</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>เอกสารและคู่มือ</h3>
+                    </div>
+                    <p>เตรียมเอกสารที่ครอบคลุมและการฝึกใช้</p>
+                    <ol>
+                        <li>สร้างเอกสารสถาปัตยกรรมระบบที่ละเอียด</li>
+                        <li>พัฒนา standard operating procedure (SOP) สำหรับการทำงานประจำวัน</li>
+                        <li>เตรียมคู่มือแก้ไขปัญหาและ protocol การตอบสนองฉุกเฉิน</li>
+                        <li>อบรม operator เกี่ยวกับฟีเจอร์ระบบและการบำรุงรักษา</li>
+                        <li>กำหนดตารางการบำรุงรักษาป้องกันและขั้นตอน</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="note warning">
+                <h3><i class="fas fa-tools" class="note-icon"></i>คู่มืออ้างอิงการแก้ไขปัญหาอย่างรวดเร็ว</h3>
+                <ul>
+                    <li><strong>ไม่มีการแสดง video:</strong> ตรวจสอบการเลือก input source ของ video wall controller และการเชื่อมต่อสาย</li>
+                    <li><strong>Camera offline:</strong> ตรวจสอบการตั้งค่า VLAN, PoE power supply และการเชื่อมต่อ network</li>
+                    <li><strong>ปัญหาการเชื่อมต่อ VPN:</strong> ตรวจสอบ MikroTik IPsec log และตรวจสอบพารามิเตอร์ phase 1/2</li>
+                    <li><strong>Storage เต็ม:</strong> ตรวจสอบ retention policy และเปิดใช้งานการทำความสะอาดอัตโนมัติ</li>
+                    <li><strong>คุณภาพภาพไม่ดี:</strong> ปรับการตั้งค่าการบีบอัดและตรวจสอบการจัดสรร bandwidth</li>
+                </ul>
+            </div>
+            
+            <div class="note success">
+                <h3><i class="fas fa-clipboard-check" class="note-icon"></i>รายการตรวจสอบความสำเร็จของการใช้งาน</h3>
+                <ol>
+                    <li>Camera ทั้งหมดบันทึกอย่างต่อเนื่องด้วยการตรวจสอบการสำรอง</li>
+                    <li>Video wall แสดง layout ที่ตั้งค่าทั้งหมดโดยไม่มีการขัดจังหวะ</li>
+                    <li>การเข้าถึงระยะไกลทำงานผ่าน mobile app และ web interface</li>
+                    <li>ระบบสำรองยืนยันการทำงานด้วยการทดสอบการกู้คืน</li>
+                    <li>password เริ่มต้นทั้งหมดถูกเปลี่ยนและมาตรการความปลอดภัยถูกใช้</li>
+                    <li>เมตริกประสิทธิภาพตรงตามข้อกำหนดที่ระบุ</li>
+                    <li>อบรม operator เสร็จสิ้นและส่งมอบคู่มือ</li>
+                </ol>
+            </div>
+        </section>
+        
+        <section class="phase">
+            <h2>
+                <div class="phase-icon"><i class="fas fa-calendar-alt"></i></div>
+                ตารางการบำรุงรักษาและการสนับสนุน
+            </h2>
+            
+            <div class="hardware-grid">
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-calendar-week"></i></div>
+                        งานรายสัปดาห์
+                    </h4>
+                    <ul>
+                        <li>ตรวจสอบความต่อเนื่องของการบันทึกข้าม camera ทั้งหมด</li>
+                        <li>ตรวจสอบ system alert และ event log</li>
+                        <li>ทดสอบระบบสำรองและตรวจสอบความสมบูรณ์ของข้อมูล</li>
+                        <li>ติดตาม storage capacity และแนวโน้มการใช้งาน</li>
+                        <li>ตรวจสอบการเชื่อมต่อ network และสถานะ VPN</li>
+                    </ul>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-calendar-alt"></i></div>
+                        งานรายเดือน
+                    </h4>
+                    <ul>
+                        <li>ตรวจสอบและเก็บถาวรภาพที่สำคัญ</li>
+                        <li>อัปเดต system firmware และ security patch</li>
+                        <li>ทำความสะอาดเลนส์และตัวเรือน camera</li>
+                        <li>ทดสอบขั้นตอนการตอบสนองฉุกเฉิน</li>
+                        <li>ตรวจสอบ user access log และสิทธิ์</li>
+                    </ul>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-calendar"></i></div>
+                        งานรายไตรมาส
+                    </h4>
+                    <ul>
+                        <li>การประเมินสุขภาพระบบที่ครอบคลุม</li>
+                        <li>การปรับระบบ NVR ให้เหมาะสมและการทำความสะอาด log</li>
+                        <li>การตรวจสอบความปลอดภัยและ network</li>
+                        <li>การติดตามสุขภาพ storage drive และการวางแผนการเปลี่ยน</li>
+                        <li>การอบรมทบทวนสำหรับ operator</li>
+                    </ul>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-chart-line"></i></div>
+                        งานรายปี
+                    </h4>
+                    <ul>
+                        <li>การประเมินประสิทธิภาพระบบที่สมบูรณ์</li>
+                        <li>การประเมิน hardware lifecycle และการวางแผนการอัพเกรด</li>
+                        <li>การตรวจสอบการปฏิบัติตามมาตรฐานความปลอดภัยและการรับรอง</li>
+                        <li>การทดสอบการกู้คืนและการอัปเดตแผน</li>
+                        <li>แผนผังเทคโนโลยีและการวางแผนการขยาย</li>
+                    </ul>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                        การวางแผน Scalability
+                    </h4>
+                    <ul>
+                        <li>ติดตามความต้องการการขยาย camera 64+ ตัว</li>
+                        <li>ประเมิน VMS solution iVMS-4200</li>
+                        <li>วางแผนความต้องการการปรับขนาด bandwidth และ storage</li>
+                        <li>พิจารณาโอกาสการรวม AI analytics</li>
+                        <li>ประเมินการรวมกับระบบจัดการอาคาร</li>
+                    </ul>
+                </div>
+                
+                <div class="hardware-card">
+                    <h4>
+                        <div class="hardware-icon"><i class="fas fa-clock"></i></div>
+                        ไทม์ไลน์การใช้งาน
+                    </h4>
+                    <div class="spec-row">
+                        <span class="spec-label">ระยะเวลาโครงการทั้งหมด</span>
+                        <span class="spec-value">30 วันทำการ</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">การวางแผนและการจัดหา</span>
+                        <span class="spec-value">1-2 สัปดาห์</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">การติดตั้งและการทดสอบ</span>
+                        <span class="spec-value">2 สัปดาห์</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">การฝึกอบรมและเอกสาร</span>
+                        <span class="spec-value">1 วัน</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>คู่มือการใช้งาน</h4>
+                    <p>การติดตั้งศูนย์ควบคุม CCTV ไพทีกรุ้ป</p>
+                    <p>ออกแบบสำหรับความปลอดภัย</p>
+                </div>
+                <div class="footer-section">
+                    <h4>ข้อกำหนดทางเทคนิค</h4>
+                    <p>ความต้องการ hardware ระดับองค์กร</p>
+                    <p>การออกแบบสถาปัตยกรรมที่ปรับขนาดได้</p>
+                </div>
+                <div class="footer-section">
+                    <h4>มาตรฐานความปลอดภัย</h4>
+                    <p>แนวทางการปฏิบัติตาม OWASP</p>
+                    <p>กรอบงาน cybersecurity ของ NIST</p>
+                </div>
+            </div>
+            <p>&copy; 2025 MASTERPOP</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Progressive scroll-based animations and interactions
+        const phases = document.querySelectorAll('.phase');
+        const progressSteps = document.querySelectorAll('.progress-step');
+        const progressFill = document.getElementById('progressFill');
+        
+        // Intersection Observer for scroll-based animations
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    
+                    // Update progress indicator
+                    const phaseId = entry.target.id;
+                    if (phaseId && phaseId.startsWith('phase')) {
+                        const phaseNumber = phaseId.replace('phase', '');
+                        updateProgress(parseInt(phaseNumber));
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all phases
+        phases.forEach(phase => {
+            observer.observe(phase);
+        });
+        
+        // Progress indicator functionality
+        function updateProgress(currentPhase) {
+            // Update step states
+            progressSteps.forEach((step, index) => {
+                const stepNumber = index + 1;
+                step.classList.remove('active', 'completed');
+                
+                if (stepNumber < currentPhase) {
+                    step.classList.add('completed');
+                } else if (stepNumber === currentPhase) {
+                    step.classList.add('active');
+                }
+            });
+            
+            // Update progress fill
+            const progressPercentage = ((currentPhase - 1) / (progressSteps.length - 1)) * 100;
+            progressFill.style.width = Math.max(0, progressPercentage) + '%';
+        }
+        
+        // Click navigation for progress steps
+        progressSteps.forEach((step, index) => {
+            step.addEventListener('click', () => {
+                const targetPhase = document.getElementById(`phase${index + 1}`);
+                if (targetPhase) {
+                    targetPhase.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Enhanced hover effects for cards
+        const cards = document.querySelectorAll('.hardware-card, .step');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+                this.style.boxShadow = 'var(--shadow-xl)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '';
+            });
+        });
+        
+        // Initialize with first phase
+        updateProgress(1);
+        
+        // Smooth scrolling for all internal links
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                const targetId = e.target.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+        
+        // Performance optimization - lazy load heavy content
+        const lazyElements = document.querySelectorAll('.phase');
+        const lazyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    lazyObserver.unobserve(entry.target);
+                }
+            });
+        });
+        
+        lazyElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            lazyObserver.observe(element);
+        });
+    </script>
+</body>
+</html>
