@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CCTV Center - Hardware & Software List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    :root {
+        --primary-color: #0052D4;
+        --secondary-color: #65C7F7;
+        --dark-blue: #0A2463;
+        --text-primary: #1E293B;
+        --text-secondary: #475569;
+        --background-color: #F0F4F8;
+        --card-background: rgba(255, 255, 255, 0.6);
+        --border-color: rgba(255, 255, 255, 0.2);
+    }
+    body {
+        font-family: 'Sarabun', sans-serif;
+        background: linear-gradient(135deg, var(--background-color) 0%, #E0E7FF 100%);
+        color: var(--text-primary);
+        margin: 0;
+        padding-top: 80px;
+        overflow-x: hidden;
+    }
+    .top-menu {
+        position: fixed; top: 0; left: 0; width: 100%;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        text-align: center;
+        padding: 1rem 0;
+        z-index: 1000;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .top-menu ul { margin: 0; padding: 0; list-style-type: none; display: inline-block; }
+    .top-menu li { display: inline-block; margin: 0 15px; }
+    .top-menu a {
+        color: var(--dark-blue);
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .top-menu a:hover, .top-menu a.active {
+        background-color: var(--primary-color);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,82,212,0.3);
+    }
+    .card {
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .table-container {
+        overflow-x: auto;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+    }
+    .styled-table { width: 100%; border-collapse: collapse; background: #fff; }
+    .styled-table th, .styled-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        text-align: left;
+    }
+    .styled-table th {
+        background: var(--primary-color);
+        color: #fff;
+        font-weight: 600;
+    }
+    .badge {
+        display: inline-block;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-menu">
+    <ul>
+    <li><a href="index.html">Home</a></li>
+      <li><a href="#hardware">Hardware</a></li>
+      <li><a href="#software">Software</a></li>
+      <li><a href="#nas">NAS Backup</a></li>
+    </ul>
+  </div>
+
+  <main class="max-w-5xl mx-auto px-4">
+    <section id="hardware" class="card">
+      <h2 class="text-2xl font-bold mb-4">📦 Hardware List</h2>
+      <div class="table-container">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Example Model</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Cameras</td><td>Hikvision DS-2CD2043G2-I (4MP)</td><td>IP Cameras with PoE</td></tr>
+            <tr><td>NVR (Branch)</td><td>Hikvision DS-7608NI-K2/8P</td><td>8-channel PoE NVR</td></tr>
+            <tr><td>NVR (Main Office)</td><td>Hikvision DS-7732NI-I4/16P</td><td>Central recording & backup</td></tr>
+            <tr><td>Router</td><td>MikroTik hEX RB750Gr3</td><td>VPN between offices</td></tr>
+            <tr><td>Switch</td><td>TP-Link TL-SG1016PE</td><td>16-Port Gigabit PoE switch</td></tr>
+            <tr><td>NAS</td><td>Synology DS220+</td><td>2-Bay, RAID1 for backup</td></tr>
+            <tr><td>UPS</td><td>APC Back-UPS 1100VA</td><td>Protects NVR + NAS</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="software" class="card">
+      <h2 class="text-2xl font-bold mb-4">💻 Software List</h2>
+      <div class="table-container">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Software</th>
+              <th>Use</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>iVMS-4200</td><td>Centralized video management</td><td>Free, install at main office PC</td></tr>
+            <tr><td>Hik-Connect</td><td>Mobile viewing</td><td>iOS & Android app</td></tr>
+            <tr><td>HikCentral (optional)</td><td>Enterprise VMS</td><td>Advanced analytics & scalability</td></tr>
+            <tr><td>MikroTik RouterOS</td><td>VPN setup</td><td>Site-to-site IPsec</td></tr>
+            <tr><td>Synology DSM</td><td>NAS management</td><td>Automated NVR backup</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="nas" class="card">
+      <h2 class="text-2xl font-bold mb-4">💾 NAS Backup Example</h2>
+      <p class="mb-4">A simple NAS setup helps ensure CCTV footage is securely backed up at the main office.</p>
+      <ul class="list-disc pl-6">
+        <li><b>NAS:</b> Synology DS220+ with 2 × 4TB HDD (RAID1 for redundancy).</li>
+        <li><b>Connection:</b> Connect NAS to main office switch (Gigabit LAN).</li>
+        <li><b>Backup Plan:</b> Use NFS/SMB share, configure NVR to record to NAS.</li>
+        <li><b>Retention:</b> Keep 30 days recording, auto overwrite old footage.</li>
+      </ul>
+    </section>
+    <div class="card text-center mt-8">
+        <p>&copy; MASTERPOP 2025</p>
+    </div>
+  </main>
+</body>
+</html>
