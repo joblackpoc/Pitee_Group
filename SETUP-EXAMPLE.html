@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PITEE-CCTV Simple Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Color scheme from index.html */
+    :root {
+        --primary-color: #0052D4;
+        --secondary-color: #65C7F7;
+        --dark-blue: #0A2463;
+        --text-primary: #1E293B;
+        --text-secondary: #475569;
+        --background-color: #F0F4F8;
+        --card-background: rgba(255, 255, 255, 0.6);
+        --border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    body {
+        font-family: 'Sarabun', sans-serif;
+        background: linear-gradient(135deg, var(--background-color) 0%, #E0E7FF 100%);
+        color: var(--text-primary);
+        margin: 0;
+        padding-top: 80px; 
+        overflow-x: hidden;
+    }
+
+    .top-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        padding: 1rem 0;
+        z-index: 1000;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .top-menu ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        display: inline-block;
+    }
+
+    .top-menu li {
+        display: inline-block;
+        margin: 0 15px;
+    }
+
+    .top-menu a {
+        color: var(--dark-blue);
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .top-menu a:hover, .top-menu a.active {
+        background-color: var(--primary-color);
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 82, 212, 0.3);
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .code-block {
+        background: var(--dark-blue);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin: 0.75rem 0;
+        position: relative;
+        overflow: auto;
+    }
+
+    .code-block pre {
+        margin: 0;
+        white-space: pre-wrap;
+        color: #E0E7FF;
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 0.375rem;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .copy-btn:hover {
+        background: var(--secondary-color);
+        transform: scale(1.05);
+    }
+
+    .badge {
+        display: inline-block;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .flow-node {
+        border: 2px solid var(--secondary-color);
+        background-color: rgba(255, 255, 255, 0.9);
+        color: var(--dark-blue);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin: 0.5rem 0;
+    }
+
+    .flow-arrow {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        font-weight: bold;
+        text-align: center;
+        margin: 0.25rem 0;
+    }
+
+    .diagram-box {
+        background: var(--dark-blue);
+        border: 1px solid var(--secondary-color);
+        border-radius: 1rem;
+        padding: 1rem;
+        overflow: auto;
+    }
+
+    details {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--border-color);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        margin: 0.75rem 0;
+    }
+
+    details > summary {
+        cursor: pointer;
+        list-style: none;
+        font-weight: 600;
+        color: var(--dark-blue);
+        font-size: 1.125rem;
+    }
+
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        text-align: left;
+    }
+
+    .styled-table th {
+        background: var(--primary-color);
+        color: white;
+        font-weight: 600;
+    }
+
+    .calc-input {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0.25rem;
+        width: 100%;
+    }
+
+    .calc-result {
+        background: var(--secondary-color);
+        color: var(--dark-blue);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-align: center;
+        margin: 0.5rem 0;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding-top: 60px;
+        }
+        
+        .top-menu {
+            padding: 0.5rem 0;
+        }
+        
+        .top-menu a {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+        }
+    }
+    
+  </style>
+  
+</head>
+<body class="antialiased">
+    <!-- Top Menu Bar from index.html -->
+    <nav class="top-menu">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+        </ul>
+    </nav>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0A2463] mb-4">PITEE-CCTV SIMPLE CENTER</h1>
+            
+        </header>
+
+        <main>
+            <!-- Goal Section -->
+            <div class="card">
+                <div class="badge">เป้าหมาย</div>
+                <p class="text-lg">ดูและสำรองข้อมูลจาก CCTV <strong>Branch A & Branch B</strong> ที่ <strong>สำนักงานไพที</strong> ใช้ <strong>MikroTik WireGuard VPN</strong> และ <strong>Hikvision iVMS-4200 Storage Server/PC/NAS</strong>. โดย <strong>ใช้กับไม่ใช้ switch</strong>.</p>
+            </div>
+
+            <!-- Hardware & Network Plan -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="card">
+                    <h2 class="text-2xl font-bold text-[#0A2463] mb-4">Hardware แต่ละ site</h2>
+                    <ul class="space-y-2 text-slate-700">
+                        <li>• <strong>MikroTik router</strong> (RouterOS v7 recommended)</li>
+                        <li>• <strong>Hikvision NVR</strong> (PoE หรือ connected to a PoE switch)</li>
+                        <li>• Internet connection</li>
+                        <li>• สายแลน CAT5e หรือ CAT6</li>
+                        <li>• (Optional) Small <strong>Gigabit switch</strong> สำหรับการขยายเพิ่ม</li>
+                        <li>• (Optional) <strong>UPS สำรองไฟฟ้า</strong> สำหรับ router/NVR/PC</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-2xl font-bold text-[#0A2463] mb-4">Network Plan (ตัวอย่าง)</h2>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <tr><th>Site</th><th>LAN</th><th>Router LAN IP</th><th>Key Device</th></tr>
+                            <tr><td>HQ</td><td>10.10.0.0/24</td><td>10.10.0.1</td><td>PC (iVMS Storage): <strong>10.10.0.10</strong></td></tr>
+                            <tr><td>Branch A</td><td>10.20.0.0/24</td><td>10.20.0.1</td><td>NVR: <strong>10.20.0.50</strong></td></tr>
+                            <tr><td>Branch B</td><td>10.30.0.0/24</td><td>10.30.0.1</td><td>NVR: <strong>10.30.0.50</strong></td></tr>
+                        </table>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-2">WireGuard tunnels: HQ↔A: 10.255.1.1/30↔10.255.1.2/30 (UDP 51821), HQ↔B: 10.255.2.1/30↔10.255.2.2/30 (UDP 51822)</p>
+                </div>
+            </div>
+
+            <!-- Wiring Options -->
+            <div class="card">
+                <h2 class="text-2xl font-bold text-[#0A2463] mb-6">วางแผนผัง – 2 options</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-[#0052D4] mb-3">A) ไม่ใช้ extra switch</h3>
+                        <ul class="space-y-2 text-slate-700">
+                            <li>• Cameras → <strong>NVR PoE ports</strong></li>
+                            <li>• NVR uplink/LAN → <strong>MikroTik LAN</strong></li>
+                            <li>• HQ PC → <strong>MikroTik LAN</strong></li>
+                            <li>• MikroTik WAN → ISP modem</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-[#0052D4] mb-3">B) ใช้ small switch (recommended)</h3>
+                        <ul class="space-y-2 text-slate-700">
+                            <li>• Cameras → <strong>PoE Switch</strong></li>
+                            <li>• PoE Switch → NVR LAN & MikroTik LAN</li>
+                            <li>• HQ PC/NAS → HQ Switch → MikroTik LAN</li>
+                            <li>• MikroTik WAN → ISP modem</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-[#0052D4] mb-4 mt-8">Network Topology</h3>
+                <div class="diagram-box">
+                    <svg viewBox="0 0 920 340" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="g1" x1="0" x2="1"><stop offset="0%" stop-color="#65C7F7"/><stop offset="100%" stop-color="#0052D4"/></linearGradient>
+                        </defs>
+                        <rect x="10" y="10" width="900" height="320" rx="16" fill="#0A2463" stroke="#65C7F7"/>
+
+                        <!-- HQ block -->
+                        <rect x="40" y="40" width="300" height="260" rx="12" fill="#0052D4" stroke="#65C7F7"/>
+                        <text x="60" y="64" fill="#E0E7FF" font-size="16" font-weight="700">HQ (10.10.0.0/24)</text>
+                        <!-- HQ MikroTik -->
+                        <rect x="60" y="84" width="120" height="46" rx="8" fill="#65C7F7" stroke="#E0E7FF"/>
+                        <text x="70" y="110" fill="#0A2463" font-size="13">MikroTik</text>
+                        <text x="70" y="124" fill="#0A2463" font-size="11">10.10.0.1</text>
+                        <!-- HQ PC -->
+                        <rect x="200" y="84" width="120" height="46" rx="8" fill="#65C7F7" stroke="#E0E7FF"/>
+                        <text x="208" y="110" fill="#0A2463" font-size="13">PC iVMS</text>
+                        <text x="208" y="124" fill="#0A2463" font-size="11">10.10.0.10</text>
+                        <!-- HQ LAN line -->
+                        <line x1="120" y1="130" x2="260" y2="130" stroke="#E0E7FF" stroke-width="2"/>
+
+                        <!-- Branch A block -->
+                        <rect x="380" y="40" width="240" height="120" rx="12" fill="#0052D4" stroke="#65C7F7"/>
+                        <text x="400" y="64" fill="#E0E7FF" font-size="16" font-weight="700">Branch A (10.20.0.0/24)</text>
+                        <rect x="400" y="84" width="110" height="46" rx="8" fill="#65C7F7" stroke="#E0E7FF"/>
+                        <text x="408" y="110" fill="#0A2463" font-size="13">MikroTik</text>
+                        <text x="408" y="124" fill="#0A2463" font-size="11">10.20.0.1</text>
+                        <rect x="530" y="84" width="80" height="46" rx="8" fill="#65C7F7" stroke="#E0E7FF"/>
+                        <text x="538" y="110" fill="#0A2463" font-size="13">NVR</text>
+                        <text x="538" y="124" fill="#0A2463" font-size="11">10.20.0.50</text>
+                        <line x1="510" y1="130" x2="530" y2="130" stroke="#E0E7FF" stroke-width="2"/>
+
+                        <!-- Branch B block -->
+                        <rect x="380" y="180" width="240" height="120" rx="12" fill="#0052D4" stroke="#65C7F7"/>
+                        <text x="400" y="204" fill="#E0E7FF" font-size="16" font-weight="700">Branch B (10.30.0.0/24)</text>
+                        <rect x="400" y="228" width="110" height="46" rx="8" fill="#65C7F7" stroke="#E0E7FF"/>
+                        <text x="408" y="254" fill="#0A2463" font-size="13">MikroTik</text>
+                        <text x="408" y="268" fill="#0A2463" font-size="11">10.30.0.1</text>
+                        <rect x="530" y="228" width="80" height="46" rx="8" fill="#65C7F7" stroke="#E0E7FF"/>
+                        <text x="538" y="254" fill="#0A2463" font-size="13">NVR</text>
+                        <text x="538" y="268" fill="#0A2463" font-size="11">10.30.0.50</text>
+                        <line x1="510" y1="274" x2="530" y2="274" stroke="#E0E7FF" stroke-width="2"/>
+
+                        <!-- VPN lines -->
+                        <path d="M180 100 C 290 100, 300 100, 400 107" stroke="url(#g1)" stroke-width="3" fill="none" />
+                        <path d="M180 100 C 290 220, 300 220, 400 235" stroke="url(#g1)" stroke-width="3" fill="none" />
+                        <text x="260" y="90" fill="#F2F527" font-size="11">WireGuard UDP 51821</text>
+                        <text x="260" y="218" fill="#F2F527" font-size="11">WireGuard UDP 51822</text>
+                    </svg>
+                </div>
+                <p class="text-sm text-slate-500 mt-2">Diagram: เชื่อมต่อแต่ละแห่งผ่าน WireGuard และ iVMS Storage Server บันทึกผ่าน VPN พร้อมกับบันทึกที่ site NVRs ด้วย</p>
+            </div>
+
+            <!-- VPN Setup -->
+            <div class="card">
+                <h2 class="text-2xl font-bold text-[#0A2463] mb-6">Step 1 – MikroTik VPN (WireGuard) Setup</h2>
+                <!-- <p class="text-slate-600 mb-6">Teacher's tip: do HQ first, then each branch. Keep this page open and copy one block at a time.</p> -->
+
+                <details open>
+                    <summary>1.1 HQ – Enable DDNS (Dynamic DNS)</summary>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('cloud1')">Copy</button>
+                        <pre id="cloud1">/ip cloud set ddns-enabled=yes update-time=yes
+/ip cloud print    # note the dns-name, e.g. hq-main.sn.mynetname.net</pre>
+                    </div>
+                </details>
+
+                <details open>
+                    <summary>1.2 HQ ↔ Branch A – สร้าง interfaces, rules, และ peers</summary>
+                    <h3 class="text-lg font-semibold text-[#0052D4] mt-4 mb-2">HQ router</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('hqa')">Copy</button>
+                        <pre id="hqa"># สร้าง WG for Branch A
+/interface wireguard add name=wg-branchA listen-port=51821
+/ip address add address=10.255.1.1/30 interface=wg-branchA
+/ip firewall filter add chain=input action=accept protocol=udp dst-port=51821 comment="Allow WG BranchA"
+
+# Show HQ public-key for wg-branchA
+/interface wireguard print detail</pre>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-[#0052D4] mt-4 mb-2">Branch A router</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('bra')">Copy</button>
+                        <pre id="bra"># สร้าง WG to HQ
+/interface wireguard add name=wg-hq listen-port=51821
+/ip address add address=10.255.1.2/30 interface=wg-hq
+/ip firewall filter add chain=input action=accept protocol=udp dst-port=51821 comment="Allow WG to HQ"
+
+# Show Branch A public-key
+/interface wireguard print detail
+
+# Replace &lt;HQ_PUBLIC_KEY&gt; and &lt;HQ_DDNS&gt; below
+/interface wireguard peers add interface=wg-hq public-key="&lt;HQ_PUBLIC_KEY&gt;" \
+ endpoint-address=hq-main.sn.mynetname.net endpoint-port=51821 \
+ allowed-address=10.10.0.0/24,10.255.1.1/32 persistent-keepalive=25
+
+/ip route add dst-address=10.10.0.0/24 gateway=wg-hq
+
+/ip firewall filter add chain=forward action=accept src-address=10.20.0.0/24 dst-address=10.10.0.0/24 comment="BranchA-&gt;HQ"
+/ip firewall filter add chain=forward action=accept src-address=10.10.0.0/24 dst-address=10.20.0.0/24 comment="HQ-&gt;BranchA"</pre>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-[#0052D4] mt-4 mb-2">Back to HQ – add Branch A peer(P2P)</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('hqa2')">Copy</button>
+                        <pre id="hqa2"># แทนที่ &lt;BRANCHA_PUBLIC_KEY&gt;
+/interface wireguard peers add interface=wg-branchA public-key="&lt;BRANCHA_PUBLIC_KEY&gt;" \
+ allowed-address=10.20.0.0/24,10.255.1.2/32 persistent-keepalive=25
+
+/ip route add dst-address=10.20.0.0/24 gateway=wg-branchA
+
+/ip firewall filter add chain=forward action=accept src-address=10.10.0.0/24 dst-address=10.20.0.0/24 comment="HQ-&gt;BranchA"
+/ip firewall filter add chain=forward action=accept src-address=10.20.0.0/24 dst-address=10.10.0.0/24 comment="BranchA-&gt;HQ"</pre>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>1.3 HQ ↔ Branch B – สร้าง interfaces, rules, and peers</summary>
+                    <h3 class="text-lg font-semibold text-[#0052D4] mt-4 mb-2">HQ router</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('hqb')">Copy</button>
+                        <pre id="hqb">/interface wireguard add name=wg-branchB listen-port=51822
+/ip address add address=10.255.2.1/30 interface=wg-branchB
+/ip firewall filter add chain=input action=accept protocol=udp dst-port=51822 comment="Allow WG BranchB"
+/interface wireguard print detail   # copy HQ public-key for wg-branchB</pre>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-[#0052D4] mt-4 mb-2">Branch B router</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('brb')">Copy</button>
+                        <pre id="brb">/interface wireguard add name=wg-hq listen-port=51822
+/ip address add address=10.255.2.2/30 interface=wg-hq
+/ip firewall filter add chain=input action=accept protocol=udp dst-port=51822 comment="Allow WG to HQ"
+/interface wireguard print detail   # show Branch B public-key
+
+# แทนที่ &lt;HQ_PUBLIC_KEY&gt;
+/interface wireguard peers add interface=wg-hq public-key="&lt;HQ_PUBLIC_KEY&gt;" \
+ endpoint-address=hq-main.sn.mynetname.net endpoint-port=51822 \
+ allowed-address=10.10.0.0/24,10.255.2.1/32 persistent-keepalive=25
+
+/ip route add dst-address=10.10.0.0/24 gateway=wg-hq
+/ip firewall filter add chain=forward action=accept src-address=10.30.0.0/24 dst-address=10.10.0.0/24 comment="BranchB-&gt;HQ"
+/ip firewall filter add chain=forward action=accept src-address=10.10.0.0/24 dst-address=10.30.0.0/24 comment="HQ-&gt;BranchB"</pre>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold text-[#0052D4] mt-4 mb-2">Back to HQ – add Branch B peer</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('hqb2')">Copy</button>
+                        <pre id="hqb2"># แทนที่ &lt;BRANCHB_PUBLIC_KEY&gt;
+/interface wireguard peers add interface=wg-branchB public-key="&lt;BRANCHB_PUBLIC_KEY&gt;" \
+ allowed-address=10.30.0.0/24,10.255.2.2/32 persistent-keepalive=25
+
+/ip route add dst-address=10.30.0.0/24 gateway=wg-branchB</pre>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>1.4 NVR network settings (แต่ละ branch)</summary>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-[#0052D4] mb-2">Branch A NVR</h4>
+                            <div class="code-block">
+                                <button class="copy-btn" onclick="copyCode('nvra')">Copy</button>
+                                <pre id="nvra">IP:       10.20.0.50
+Mask:     255.255.255.0
+Gateway:  10.20.0.1
+DNS:      8.8.8.8</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-[#0052D4] mb-2">Branch B NVR</h4>
+                            <div class="code-block">
+                                <button class="copy-btn" onclick="copyCode('nvrb')">Copy</button>
+                                <pre id="nvrb">IP:       10.30.0.50
+Mask:     255.255.255.0
+Gateway:  10.30.0.1
+DNS:      8.8.8.8</pre>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>1.5 ทดสอบ Ping จาก HQ PC (10.10.0.10)</summary>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode('ping')">Copy</button>
+                        <pre id="ping">ping 10.20.0.50
+ping 10.30.0.50</pre>
+                    </div>
+                    <p class="mt-2 text-green-600 font-semibold">ถ้า OK, คือการตั้งค่า VPN + routing ถูกต้อง.</p>
+                </details>
+            </div>
+
+            <!-- iVMS Setup -->
+            <div class="card">
+                <h2 class="text-2xl font-bold text-[#0A2463] mb-6">Step 2 – iVMS-4200 + Storage Server (HQ PC)</h2>
+                <ol class="space-y-3 text-slate-700">
+                    <li><strong>1.</strong> ติดตั้ง <strong>iVMS-4200</strong> และเลือก <strong>Storage Server</strong> component.</li>
+                    <li><strong>2.</strong> สร้างโฟลเดอร์สำหรับบันทึก, อื่นๆ <code class="bg-gray-100 px-2 py-1 rounded">D:\CCTV\Storage</code>.</li>
+                    <li><strong>3.</strong> Open <strong>Storage Server</strong> config → add the folder → <strong>Initialize</strong> / set <strong>Overwrite</strong>.</li>
+                    <li><strong>4.</strong> Open <strong>iVMS-4200 Client → Device Management → Add (IP/Domain)</strong>:
+                        <ul class="ml-6 mt-2 space-y-1">
+                            <li>• Branch A NVR: <strong>10.20.0.50</strong> (username/password)</li>
+                            <li>• Branch B NVR: <strong>10.30.0.50</strong> (username/password)</li>
+                        </ul>
+                    </li>
+                    <li><strong>5.</strong> ใน <strong>Storage Schedule / Recording</strong>: choose <strong>Storage Server</strong> as Recorder → assign channels (A CH1—CH8, B CH1—CH8).</li>
+                    <li><strong>6.</strong> <strong>Stream type</strong>: Main stream for recording; Sub-stream for live view.</li>
+                    <li><strong>7.</strong> Set <strong>Schedule</strong>: 24/7 (or Motion), และ <strong>Retention การเก็บรักษาข้อมูล</strong>: ตัวอย่าง 14 days.</li>
+                    <li><strong>8.</strong> Verify ใน <strong>Playback</strong> selecting <strong>Storage Server</strong> as source.</li>
+                </ol>
+            </div>
+
+            <!-- Calculators -->
+            <div class="card">
+                <h2 class="text-2xl font-bold text-[#0A2463] mb-6">Step 3 – คำนวณ Bandwidth & Storage</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-[#0052D4] mb-4">คำนวณ Branch uplink</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Cameras (#):</label>
+                                <input id="cams" type="number" value="8" class="calc-input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Bitrate per cam (Mb/s):</label>
+                                <input id="mbps" type="number" value="4" step="0.1" class="calc-input">
+                            </div>
+                            <div class="calc-result" id="uplink">ต้องการ ≈ 32 Mb/s upload</div>
+                            <p class="text-sm text-slate-500">Tip: ใช้ Sub-stream สำหรับแสดงสดเพื่อประหยัด bandwidth.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-[#0052D4] mb-4">Storage sizing (HQ)</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Total bitrate (Mb/s):</label>
+                                <input id="tmbps" type="number" value="64" step="0.1" class="calc-input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Retention (days):</label>
+                                <input id="days" type="number" value="14" class="calc-input">
+                            </div>
+                            <div class="calc-result" id="storage">ต้องการ ≈ 9.7 TB (add 20—30%)</div>
+                            <p class="text-sm text-slate-500">สูตร: (Mb/s × 3600 × 24 × days) / 8 / 1,000,000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QoS -->
+            <div class="card">
+                <h2 class="text-2xl font-bold text-[#0A2463] mb-4">Optional – QoS Priority สำหรับ CCTV to HQ</h2>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('qos')">Copy</button>
+                    <pre id="qos">/queue simple add name="CCTV_to_HQ" target=10.10.0.0/24 max-limit=0/0 priority=1/1 comment="Prioritize CCTV to HQ"</pre>
+                </div>
+            </div>
+
+            <!-- Security Checklist -->
+            <div class="card">
+                <h2 class="text-2xl font-bold text-[#0A2463] mb-4">Security checklist</h2>
+                <ul class="space-y-2 text-slate-700">
+                    <li>• Update firmware: MikroTik + Hikvision NVR.</li>
+                    <li>• Strong passwords; disable บัญชีที่ไม่ได้ใช้งาน.</li>
+                    <li>• <strong>Firewall</strong>: only allow UDP <strong>51821</strong>/<strong>51822</strong> on input (WireGuard). Forward only HQ↔Branches.</li>
+                    <li>• Disable WAN management (WinBox/SSH from internet).</li>
+                    <li>• Enable NTP on routers & NVRs (accurate timestamps).</li>
+                    <li>• ใช้ UPS protection.</li>
+                </ul>
+            </div>
+
+            <!-- Troubleshooting -->
+            <div class="card">
+                <h2 class="text-2xl font-bold text-[#0A2463] mb-4">Troubleshooting – แก้ปัญหา</h2>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+                        <div class="font-semibold text-[#0052D4]">Ping fails HQ→NVR?</div>
+                        <div class="col-span-2 text-slate-700">Check routes (10.20/10.30 via wg), forward rules, NVR gateway set to router.</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+                        <div class="font-semibold text-[#0052D4]">WG peer แสดง no Rx/Tx?</div>
+                        <div class="col-span-2 text-slate-700">Confirm endpoint (DDNS), UDP ports open on input chain, public-key pasted correctly.</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+                        <div class="font-semibold text-[#0052D4]">Live view ok แต่ no recording?</div>
+                        <div class="col-span-2 text-slate-700">Bind channels to <strong>Storage Server</strong>, ตรวจสอบว่า path initialized และมี free space.</div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+                        <div class="font-semibold text-[#0052D4]">Bandwidth choppy?</div>
+                        <div class="col-span-2 text-slate-700">ใช้ sub-stream สำหรับ live view; ตรวจสอบ motion recording; upgrade uplink.</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    <div class="hr"></div>
+	<div class="container">
+    <footer style="text-align: center;">
+      <p>&copy;MASTERPOP 2025</p>
+    </footer>
+
+	</div>
+
+  </div>
+
+  <script>
+    // Copy buttons
+    document.querySelectorAll('.btn.copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-copy');
+        const code = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          const old = btn.innerHTML;
+          btn.innerHTML = 'Copied!';
+          setTimeout(() => btn.innerHTML = old, 1200);
+        });
+      });
+    });
+
+    // Simple calculators
+    function updateUplink(){
+      const cams = parseFloat(document.getElementById('cams').value || '0');
+      const mbps = parseFloat(document.getElementById('mbps').value || '0');
+      const need = cams * mbps;
+      document.getElementById('uplink').textContent = `Need ≈ ${need.toFixed(1)} Mb/s upload`;
+    }
+    function updateStorage(){
+      const tmbps = parseFloat(document.getElementById('tmbps').value || '0');
+      const days = parseFloat(document.getElementById('days').value || '0');
+      const tb = (tmbps * 3600 * 24 * days) / 8 / 1_000_000; // decimal TB
+      document.getElementById('storage').textContent = `Need ≈ ${tb.toFixed(1)} TB (add 20–30%)`;
+    }
+    ['cams','mbps'].forEach(id=>document.getElementById(id).addEventListener('input', updateUplink));
+    ['tmbps','days'].forEach(id=>document.getElementById(id).addEventListener('input', updateStorage));
+    updateUplink();
+    updateStorage();
+  </script>
+</body>
+</html>
