@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทำไม DVR จึงมีปัญหาสำหรับระบบ CCTV แบบ 2 สำนักงานระยะไกล</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #1e3c72;
+            font-size: 2em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #2a5298;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            padding-left: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .diagram {
+            background: #2d3748;
+            color: #a0aec0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .diagram pre {
+            color: #68d391;
+            white-space: pre;
+            margin: 0;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 20px 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .code-block .comment {
+            color: #68d391;
+        }
+
+        .code-block .keyword {
+            color: #f687b3;
+        }
+
+        .code-block .string {
+            color: #fbd38d;
+        }
+
+        .code-block .function {
+            color: #90cdf4;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .danger-box {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        table tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 40px;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .badge-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        footer {
+            background: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .comparison-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dvr-card {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+
+        .nvr-card {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .comparison-table {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎥 ทำไม DVR จึงมีปัญหาสำหรับระบบ CCTV แบบ 2 สำนักงานระยะไกล</h1>
+            <p>การวิเคราะห์ทางเทคนิคและความปลอดภัยทางไซเบอร์</p>
+        </header>
+
+        <div class="content">
+            <!-- Section 1 -->
+            <div class="section">
+                <h2>🔌 1. ปัญหาการเชื่อมต่อสำนักงานระยะไกล</h2>
+                
+                <div class="diagram">
+<pre>ปัญหา: การส่งสัญญาณแบบอนาล็อก
+
+สถาปัตยกรรม DVR:
+สำนักงานระยะไกล → กล้องอนาล็อก → สายโคแอกเชียล → DVR (บันทึกในพื้นที่เท่านั้น)
+                                                    ↓
+                                    จะส่งภาพไปสำนักงานใหญ่ได้อย่างไร?
+                                                    ↓
+                           DVR → ตัวแปลงสัญญาณ → VPN → สำนักงานใหญ่
+                                    (ต้องใช้อุปกรณ์เพิ่ม + มีดีเลย์จากการแปลงสัญญาณ)
+
+เทียบกับ
+
+สถาปัตยกรรม NVR:
+สำนักงานระยะไกล → กล้อง IP → Network Switch → VPN → NVR/VMS สำนักงานใหญ่
+                              (ส่งสัญญาณดิจิทัลโดยตรง ไม่ต้องแปลง)
+</pre>
+                </div>
+
+                <h3>ความท้าทายทางเทคนิค:</h3>
+                <div class="code-block">
+<pre><span class="comment"># ข้อจำกัดการเข้าถึง DVR จากระยะไกล</span>
+<span class="keyword">class</span> <span class="function">DVRRemoteAccess</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self):
+        self.analog_cameras = <span class="keyword">True</span>
+        self.local_recording_only = <span class="keyword">True</span>
+        
+    <span class="keyword">def</span> <span class="function">stream_to_main_office</span>(self):
+        <span class="comment"># DVR ต้องแปลงสัญญาณอนาล็อกเป็นดิจิทัลก่อน</span>
+        digitized_stream = self.analog_to_digital_conversion()
+        
+        <span class="comment"># จากนั้นบีบอัดเพื่อส่งผ่านเครือข่าย</span>
+        compressed = self.h264_encoding(digitized_stream)
+        
+        <span class="comment"># แล้วส่งผ่าน VPN</span>
+        <span class="comment"># = แปลงหลายขั้นตอน = คุณภาพลดลง + ความล่าช้าสูง</span>
+        
+        <span class="keyword">return</span> compressed  <span class="comment"># คุณภาพเสื่อมโทรมแล้ว</span>
+</pre>
+                </div>
+
+                <div class="danger-box">
+                    <strong>⚠️ ข้อเสียหลัก:</strong>
+                    <ul>
+                        <li>ต้องใช้อุปกรณ์แปลงสัญญาณเพิ่มเติม (Video Encoder)</li>
+                        <li>มีความล่าช้า (Latency) จากการแปลงสัญญาณหลายขั้นตอน</li>
+                        <li>คุณภาพภาพลดลงจากการบีบอัดซ้ำ</li>
+                        <li>ต้นทุนสูงขึ้นจากอุปกรณ์เพิ่มเติม</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Section 2 -->
+            <div class="section">
+                <h2>🔒 2. ช่องโหว่ด้านความปลอดภัยทางไซเบอร์ (วิกฤตสำหรับการปฏิบัติตาม NIST/OWASP)</h2>
+                
+                <div class="danger-box">
+                    <h3>⛔ ปัญหาด้านความปลอดภัยหลักของ DVR:</h3>
+                </div>
+
+                <div class="code-block">
+<pre><span class="comment"># ปัญหาความปลอดภัยของ DVR (มุมมอง OWASP)</span>
+
+VULNERABILITIES = {
+    <span class="string">'A1_Injection'</span>: {
+        <span class="string">'issue'</span>: <span class="string">'DVR หลายรุ่นใช้เฟิร์มแวร์เก่าที่มีช่องโหว่ SQL injection'</span>,
+        <span class="string">'example'</span>: <span class="string">'ช่องโหว่ backdoor ของ Hikvision DVR-2016 (CVE-2017-7921)'</span>,
+        <span class="string">'mitigation'</span>: <span class="string">'จำกัด - ขึ้นอยู่กับการแพตช์จากผู้ผลิต'</span>
+    },
+    
+    <span class="string">'A2_Broken_Authentication'</span>: {
+        <span class="string">'issue'</span>: <span class="string">'รหัสผ่านเริ่มต้นที่อ่อนแอ ไม่รองรับ MFA'</span>,
+        <span class="string">'common_defaults'</span>: [
+            (<span class="string">'admin'</span>, <span class="string">'12345'</span>),
+            (<span class="string">'admin'</span>, <span class="string">'admin'</span>),
+            (<span class="string">'888888'</span>, <span class="string">'888888'</span>)  <span class="comment"># Hikvision DVR รุ่นเก่า</span>
+        ],
+        <span class="string">'risk'</span>: <span class="string">'สูง - ถูกโจมตีบ่อยครั้งโดย Mirai botnet'</span>
+    },
+    
+    <span class="string">'A3_Sensitive_Data_Exposure'</span>: {
+        <span class="string">'issue'</span>: <span class="string">'ความสามารถในการเข้ารหัสจำกัด'</span>,
+        <span class="string">'problems'</span>: [
+            <span class="string">'ไม่รองรับ TLS 1.3 (DVR ส่วนใหญ่รองรับแค่ TLS 1.0)'</span>,
+            <span class="string">'สตรีม RTSP ไม่เข้ารหัส'</span>,
+            <span class="string">'เก็บข้อมูลรับรองเป็นข้อความธรรมดาในไฟล์ config'</span>,
+            <span class="string">'ไม่มีการเข้ารหัสฮาร์ดดิสก์'</span>
+        ]
+    },
+    
+    <span class="string">'A5_Security_Misconfiguration'</span>: {
+        <span class="string">'issue'</span>: <span class="string">'ตัวเลือกการ hardening จำกัด'</span>,
+        <span class="string">'limitations'</span>: [
+            <span class="string">'ปิด telnet/FTP ไม่ได้ในหลายรุ่น'</span>,
+            <span class="string">'ความสามารถ firewall จำกัด'</span>,
+            <span class="string">'ไม่รองรับ VLAN'</span>,
+            <span class="string">'UPnP เปิดอยู่โดยค่าเริ่มต้น (ความเสี่ยงสูง)'</span>
+        ]
+    }
+}
+</pre>
+                </div>
+
+                <h3>📊 ปัญหาการปฏิบัติตาม NIST 800-53:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัสควบคุม</th>
+                            <th>ปัญหา</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-danger">SC-8</span></td>
+                            <td>ความลับในการส่งข้อมูล - DVR ขาดการเข้ารหัสที่เหมาะสม</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-danger">SC-13</span></td>
+                            <td>การป้องกันด้วยการเข้ารหัส - อัลกอริทึมอ่อนแอ/ล้าสมัย</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-danger">AC-17</span></td>
+                            <td>การเข้าถึงระยะไกล - การควบคุมการเข้าถึงระยะไกลไม่ดี</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-danger">AU-9</span></td>
+                            <td>การป้องกันข้อมูลการตรวจสอบ - ความสามารถในการตรวจสอบจำกัด</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-danger">SI-7</span></td>
+                            <td>ความสมบูรณ์ของซอฟต์แวร์ - ไม่มี code signing เสี่ยงต่อการงัดแงะ</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🚨 ตัวอย่างการโจมตีในโลกจริง:</h3>
+                <div class="code-block">
+<pre><span class="comment"># การโจมตี DVR ทั่วไป (พบใน Shodan)</span>
+<span class="comment"># CVE-2021-36260: Hikvision Command Injection</span>
+
+POST /SDK/webLanguage HTTP/1.1
+Host: dvr.yourcompany.com
+Content-Type: application/x-www-form-urlencoded
+
+lang=en;reboot;  <span class="comment"># ช่องโหว่ Command injection</span>
+
+<span class="comment"># ผลลัพธ์: DVR รีบูต บันทึกหายไป</span>
+<span class="comment"># ในระบบ NVR/กล้อง IP: การโจมตีอุปกรณ์เดียวไม่กระทบทั้งระบบ</span>
+</pre>
+                </div>
+            </div>
+
+            <!-- Section 3 -->
+            <div class="section">
+                <h2>🔗 3. การรวมระบบ VMS มีข้อจำกัด</h2>
+
+                <div class="comparison-table">
+                    <div class="comparison-card dvr-card">
+                        <h3>❌ DVR Integration (ยุ่งยาก)</h3>
+                        <ul>
+                            <li>โปรโตคอลเฉพาะของผู้ผลิต</li>
+                            <li>API จำกัด (CGI-bin เท่านั้น)</li>
+                            <li>ไม่มี RESTful API</li>
+                            <li>ไม่รองรับ ONVIF</li>
+                            <li>ต้องตั้งค่า manual ทุกรุ่น</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card nvr-card">
+                        <h3>✅ NVR Integration (ง่าย)</h3>
+                        <ul>
+                            <li>โปรโตคอลมาตรฐาน (ONVIF, RTSP)</li>
+                            <li>RESTful API แบบเต็มรูปแบบ</li>
+                            <li>รองรับ JSON responses</li>
+                            <li>Auto-discovery</li>
+                            <li>รวมระบบกับ Django ได้ง่าย</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="code-block">
+<pre><span class="comment"># เปรียบเทียบการรวมระบบ</span>
+
+<span class="comment"># การรวมระบบ DVR (ยุ่งยาก)</span>
+<span class="keyword">class</span> <span class="function">DVRIntegration</span>:
+    <span class="keyword">def</span> <span class="function">connect_to_vms</span>(self):
+        <span class="comment"># ปัญหา 1: โปรโตคอลเฉพาะของผู้ผลิต</span>
+        protocols = [<span class="string">'SDK_DVR_V3'</span>, <span class="string">'NETAPP'</span>, <span class="string">'Proprietary_Binary'</span>]
+        
+        <span class="comment"># ปัญหา 2: API จำกัด</span>
+        api_endpoints = [
+            <span class="string">'/cgi-bin/playback.cgi'</span>,  <span class="comment"># เล่นย้อนหลังพื้นฐานเท่านั้น</span>
+            <span class="string">'/cgi-bin/snapshot.cgi'</span>   <span class="comment"># ภาพนิ่งเท่านั้น</span>
+        ]
+        <span class="comment"># ไม่มี RESTful API, ไม่มี JSON responses</span>
+        
+        <span class="comment"># ปัญหา 3: ไม่รองรับมาตรฐาน</span>
+        onvif_support = <span class="keyword">False</span>
+        rtsp_over_http = <span class="keyword">False</span>
+        
+        <span class="keyword">return</span> <span class="string">"ต้องตั้งค่าแบบ manual สำหรับแต่ละรุ่น DVR"</span>
+
+<span class="comment"># การรวมระบบ NVR/กล้อง IP (ง่าย)</span>
+<span class="keyword">class</span> <span class="function">NVRIntegration</span>:
+    <span class="keyword">def</span> <span class="function">connect_to_vms</span>(self):
+        <span class="comment"># โปรโตคอลมาตรฐาน</span>
+        protocols = [<span class="string">'ONVIF'</span>, <span class="string">'RTSP'</span>, <span class="string">'HTTP/HTTPS'</span>, <span class="string">'WebSocket'</span>]
+        
+        <span class="comment"># RESTful API</span>
+        api = requests.get(<span class="string">'https://camera/ISAPI/System/deviceInfo'</span>)
+        
+        <span class="comment"># ค้นหาอัตโนมัติ</span>
+        onvif_discovery = <span class="keyword">True</span>
+        
+        <span class="comment"># รวมระบบกับ Django</span>
+        <span class="keyword">from</span> hikvisionapi <span class="keyword">import</span> Client
+        client = Client(<span class="string">'10.10.10.5'</span>, <span class="string">'admin'</span>, <span class="string">'password'</span>)
+        <span class="keyword">return</span> client.System.deviceInfo
+</pre>
+                </div>
+            </div>
+
+            <!-- Section 4 -->
+            <div class="section">
+                <h2>📈 4. ปัญหาด้านความสามารถในการขยายและการบำรุงรักษา</h2>
+
+                <div class="warning-box">
+                    <h3>📝 สถานการณ์: เพิ่มกล้องอีก 5 ตัวที่สำนักงานระยะไกล 1</h3>
+                </div>
+
+                <div class="comparison-table">
+                    <div class="comparison-card dvr-card">
+                        <h3>❌ แนวทาง DVR</h3>
+                        <ol>
+                            <li>เดินสายโคแอกเชียลใหม่ 5 เส้นจากกล้องไปห้อง DVR</li>
+                            <li>DVR มี 16 ช่อง → ตอนนี้เต็มแล้ว (11+5=16)</li>
+                            <li>ต้องเพิ่ม DVR ตัวที่สอง ($$$)</li>
+                            <li>ตั้งค่า DVR ตัวที่สองสำหรับการเข้าถึงระยะไกล</li>
+                            <li>สำนักงานใหญ่ต้องดู DVR 2 ตัวแยกกัน</li>
+                            <li><strong>ค่าติดตั้งสาย: 500-1,000 บาทต่อกล้อง</strong></li>
+                        </ol>
+                    </div>
+
+                    <div class="comparison-card nvr-card">
+                        <h3>✅ แนวทาง NVR</h3>
+                        <ol>
+                            <li>เชื่อมต่อกล้องเข้ากับ network switch ที่มีอยู่ (POE)</li>
+                            <li>NVR ค้นหากล้องอัตโนมัติ</li>
+                            <li>เพิ่มเข้า VMS แค่ 2 คลิก</li>
+                            <li>ดูได้จากจุดเดียว</li>
+                            <li>ไม่ต้องเพิ่มอุปกรณ์</li>
+                            <li><strong>ค่าติดตั้ง: 50-100 บาทต่อกล้อง</strong></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5 -->
+            <div class="section">
+                <h2>✅ สถานการณ์ที่ DVR อาจยอมรับได้ (กรณีพิเศษ)</h2>
+
+                <div class="info-box">
+                    <h3>🔄 สถานการณ์ A: การรวมระบบเดิม (Legacy)</h3>
+                    <p><strong>ถ้าคุณมีอยู่แล้ว:</strong></p>
+                    <ul>
+                        <li>โครงสร้างกล้องอนาล็อกเดิม</li>
+                        <li>กล้อง HD-TVI คุณภาพสูงรุ่นใหม่ (4MP+)</li>
+                        <li>งบประมาณจำกัด</li>
+                        <li>สถานที่เดียวเท่านั้น</li>
+                    </ul>
+                    <p><strong>แล้ว:</strong> แนวทาง Hybrid DVR/NVR อาจใช้ได้</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🏢 สถานการณ์ B: การติดตั้งขนาดเล็กมากสถานที่เดียว</h3>
+                    <p><strong>ถ้าเป็นไปตามเงื่อนไข:</strong></p>
+                    <ul>
+                        <li>สถานที่เดียว (ไม่มีสำนักงานระยะไกล)</li>
+                        <li>&lt; 8 กล้อง</li>
+                        <li>ความต้องการตรวจสอบพื้นฐาน</li>
+                        <li>งบประมาณจำกัด</li>
+                        <li>ไม่มีข้อกำหนดการปฏิบัติตามด้านความปลอดภัยทางไซเบอร์</li>
+                    </ul>
+                    <p><strong>แล้ว:</strong> DVR ยอมรับได้สำหรับการติดตั้งแบบง่าย</p>
+                </div>
+            </div>
+
+            <!-- Section 6 -->
+            <div class="section">
+                <h2>🔀 แนวทาง Hybrid (ถ้าจำเป็นต้องใช้กล้องอนาล็อกบางตัว)</h2>
+
+                <div class="diagram">
+<pre>สถาปัตยกรรม:
+
+สำนักงานระยะไกล (กล้องอนาล็อกเดิม)
+    ↓
+กล้องอนาล็อก → Hybrid DVR/NVR (รองรับทั้ง HD-TVI + IP)
+    ↓                        ↓
+สายโคแอก                เครือข่าย IP
+    ↓                        ↓
+บันทึกในพื้นที่ DVR    Encoder → VPN → VMS สำนักงานใหญ่
+</pre>
+                </div>
+
+                <div class="success-box">
+                    <h3>🔧 อุปกรณ์ Hybrid แนะนำ:</h3>
+                    <ul>
+                        <li><strong>Hikvision DS-7608NI-K1/8P</strong> (รองรับ 8 IP + 8 Analog)</li>
+                        <li><strong>Dahua XVR</strong> (Universal Video Recorder)</li>
+                    </ul>
+                </div>
+
+                <h3>💰 เปรียบเทียบต้นทุน:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รายการ</th>
+                            <th>DVR (12 กล้อง)</th>
+                            <th>NVR (12 กล้อง)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>กล้อง</td>
+                            <td>1,800 USD</td>
+                            <td>3,600 USD</td>
+                        </tr>
+                        <tr>
+                            <td>DVR/NVR (16 ช่อง)</td>
+                            <td>800 USD</td>
+                            <td>1,200 USD</td>
+                        </tr>
+                        <tr>
+                            <td>สายสัญญาณ</td>
+                            <td>600 USD (โคแอก)</td>
+                            <td>240 USD (Cat6)</td>
+                        </tr>
+                        <tr>
+                            <td>อุปกรณ์เสริม</td>
+                            <td>360 USD (แหล่งจ่ายไฟ)</td>
+                            <td>600 USD (POE Switch)</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าติดตั้ง</td>
+                            <td>1,200 USD</td>
+                            <td>600 USD</td>
+                        </tr>
+                        <tr>
+                            <td>Encoder สำหรับระยะไกล</td>
+                            <td>500 USD</td>
+                            <td>-</td>
+                        </tr>
+                        <tr style="background: #f7fafc; font-weight: bold;">
+                            <td>รวมเริ่มต้น</td>
+                            <td>5,260 USD</td>
+                            <td>6,240 USD</td>
+                        </tr>
+                        <tr style="background: #fef3c7; font-weight: bold;">
+                            <td>TCO 5 ปี</td>
+                            <td>8,260 USD</td>
+                            <td>11,340 USD</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <p><strong>📌 หมายเหตุ:</strong> ราคาในตัวอย่างเป็นดอลลาร์สหรัฐ (USD) สามารถคูณด้วยอัตราแลกเปลี่ยนเพื่อแปลงเป็นบาทไทย (ประมาณ 1 USD = 35-36 THB)</p>
+                    <p><strong>💡 ข้อสังเกต:</strong> แม้ DVR จะถูกกว่าในตอนแรก แต่ขาดฟีเจอร์สำคัญและมีค่าใช้จ่ายในระยะยาวสูงกว่าเมื่อคำนึงถึงการบำรุงรักษาและข้อจำกัด</p>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h2 style="color: white; border-bottom-color: white;">📊 สรุปการเปรียบเทียบ DVR vs NVR</h2>
+                
+                <table style="background: white; color: #333;">
+                    <thead>
+                        <tr>
+                            <th>หัวข้อการพิจารณา</th>
+                            <th>DVR</th>
+                            <th>NVR</th>
+                            <th>ผู้ชนะ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>การเข้าถึงระยะไกลหลายสถานที่</td>
+                            <td><span class="badge badge-danger">❌ แย่</span></td>
+                            <td><span class="badge badge-success">✅ ดีเยี่ยม</span></td>
+                            <td><strong>NVR</strong></td>
+                        </tr>
+                        <tr>
+                            <td>การปฏิบัติตามความปลอดภัยทางไซเบอร์</td>
+                            <td><span class="badge badge-danger">❌ ไม่ผ่าน</span></td>
+                            <td><span class="badge badge-success">✅ ผ่าน</span></td>
+                            <td><strong>NVR</strong></td>
+                        </tr>
+                        <tr>
+                            <td>การรวมระบบ Python/Django</td>
+                            <td><span class="badge badge-danger">❌ ยาก</span></td>
+                            <td><span class="badge badge-success">✅ ง่าย</span></td>
+                            <td><strong>NVR</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ความสามารถในการขยาย</td>
+                            <td><span class="badge badge-danger">❌ จำกัด</span></td>
+                            <td><span class="badge badge-success">✅ ไม่จำกัด</span></td>
+                            <td><strong>NVR</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ต้นทุนเริ่มต้น</td>
+                            <td><span class="badge badge-success">✅ ต่ำกว่า</span></td>
+                            <td><span class="badge badge-warning">❌ สูงกว่า</span></td>
+                            <td><strong>DVR</strong></td>
+                        </tr>
+                        <tr>
+                            <td>TCO 5 ปี</td>
+                            <td><span class="badge badge-info">~8K USD</span></td>
+                            <td><span class="badge badge-info">~11K USD</span></td>
+                            <td><strong>ใกล้เคียงกัน</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ความละเอียด</td>
+                            <td><span class="badge badge-danger">❌ 5MP สูงสุด</span></td>
+                            <td><span class="badge badge-success">✅ 12MP+</span></td>
+                            <td><strong>NVR</strong></td>
+                        </tr>
+                        <tr>
+                            <td>AI Analytics</td>
+                            <td><span class="badge badge-danger">❌ ไม่มี</span></td>
+                            <td><span class="badge badge-success">✅ มี</span></td>
+                            <td><strong>NVR</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ความซับซ้อนในการติดตั้ง</td>
+                            <td><span class="badge badge-danger">❌ สูง</span></td>
+                            <td><span class="badge badge-warning">⚠️ ปานกลาง</span></td>
+                            <td><strong>NVR</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Conclusion -->
+            <div class="section">
+                <h2>🎯 สรุปและคำแนะนำ</h2>
+                
+                <div class="success-box">
+                    <h3>✅ คำแนะนำสำหรับระบบ CCTV องค์กรแบบหลายสถานที่:</h3>
+                    <p style="font-size: 1.2em; font-weight: bold;">ใช้ NVR พร้อมกล้อง IP</p>
+                    
+                    <h4>เหตุผล:</h4>
+                    <ul>
+                        <li>✅ ปฏิบัติตามมาตรฐาน NIST 800-53</li>
+                        <li>✅ ใช้แนวปฏิบัติที่ดีที่สุดด้านความปลอดภัย OWASP</li>
+                        <li>✅ รวมระบบ Python/Django ได้ง่าย</li>
+                        <li>✅ ขยายได้ถึง 100+ กล้อง</li>
+                        <li>✅ พร้อมสำหรับ AI analytics</li>
+                        <li>✅ ความละเอียด 4K/8MP</li>
+                        <li>✅ จัดการได้จากจุดเดียว (Single pane of glass)</li>
+                        <li>✅ ท่าทางด้านความปลอดภัยทางไซเบอร์ระดับมืออาชีพ</li>
+                    </ul>
+                </div>
+
+                <div class="danger-box">
+                    <h3>❌ ไม่แนะนำให้ใช้ DVR เพราะ:</h3>
+                    <ol>
+                        <li><strong>ล้มเหลวในการปฏิบัติตามมาตรฐานความปลอดภัย</strong>
+                            <ul>
+                                <li>ไม่สามารถปฏิบัติตาม NIST 800-53 controls</li>
+                                <li>ช่องโหว่ OWASP ไม่สามารถแก้ไขได้อย่างเต็มที่</li>
+                                <li>ไม่มีการเข้ารหัสสำหรับข้อมูลที่ส่งผ่าน</li>
+                                <li>ความสามารถในการตรวจสอบไม่ดี</li>
+                            </ul>
+                        </li>
+                        <li><strong>การตรวจสอบระยะไกลไม่ดี</strong>
+                            <ul>
+                                <li>ต้องใช้อุปกรณ์เข้ารหัสเพิ่มเติม</li>
+                                <li>ความล่าช้าสูง (analog→digital→compress→transmit)</li>
+                                <li>คุณภาพเสื่อมโทรมในแต่ละการแปลง</li>
+                                <li>แก้ปัญหายาก</li>
+                            </ul>
+                        </li>
+                        <li><strong>ไม่สามารถรองรับอนาคต</strong>
+                            <ul>
+                                <li>ไม่สามารถใช้ AI analytics</li>
+                                <li>ความละเอียดจำกัด (สูงสุด 5MP)</li>
+                                <li>ยากต่อการขยาย</li>
+                                <li>ถูกล็อคกับผู้ขาย (Vendor lock-in)</li>
+                            </ul>
+                        </li>
+                        <li><strong>การรวมระบบยุ่งยาก</strong>
+                            <ul>
+                                <li>การรวมระบบ Django/Python VMS จะยากมาก</li>
+                                <li>ไม่มี RESTful APIs</li>
+                                <li>SDK เฉพาะของผู้ผลิต (ถ้ามี)</li>
+                                <li>ความสามารถในการทำงานอัตโนมัติจำกัด</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 ทางเลือกที่ประหยัดงบประมาณ (ยังใช้ NVR):</h3>
+                    <ul>
+                        <li><strong>กล้อง:</strong> Hikvision Value Series DS-2CD1043G0-I (4MP) - $120</li>
+                        <li><strong>NVR:</strong> Hikvision DS-7616NI-Q2 ($600 แทน $1200)</li>
+                        <li><strong>ทางเลือก:</strong> ใช้เซิร์ฟเวอร์ที่มีอยู่ + Blue Iris VMS ($50 license)</li>
+                        <li><strong>Open Source:</strong> ZoneMinder/Shinobi (ฟรี)</li>
+                        <li><strong>Storage:</strong> Refurbished Dell R720 + FreeNAS ($1500 แทน Synology $5000)</li>
+                    </ul>
+                    <p><strong>ประหยัดได้: ~40% ขณะที่ยังคงโครงสร้าง IP</strong></p>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>📄 เอกสารนี้จัดทำโดย: CCTV & Cybersecurity Engineer</p>
+            <p>🔒 มาตรฐาน: NIST 800-53 | OWASP Top 10 | Hikvision Best Practices</p>
+            <p>📅 วันที่: ธันวาคม 2025</p>
+            <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">
+                💼 Professional CCTV Design for Enterprise Multi-Site Deployment
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
